@@ -10,38 +10,45 @@ import SwiftUI
 struct StartPageView: View {
     var body: some View {
         
-        VStack {
-            Spacer()
-            Button(action: {
+        NavigationView {
+            
+            VStack {
                 
-            }) {
-                HStack {
-                    Text("Recept")
-                        .font(.headline)
-                    Spacer()
-                    Image(systemName: "fork.knife")
+                Text("Fresh Recepies")
+                    .font(.title)
+                Spacer()
+
+                NavigationLink(destination: RecepieView()) {
+                    HStack{
+                        Text("Recept")
+                        Spacer()
+                        Image(systemName: "fork.knife")
+                    }
+                 
                 }
-            
+          
                 
+                NavigationLink(destination: ShoppingListView()) {
+                    HStack{
+                        HStack {
+                            Text("Inköpslista")
+                            Spacer()
+                            Image(systemName: "list.clipboard")
+                           
+                        }
+                    }
+                 
+                }
+               Spacer()
             }
-            
-            Spacer()
-            Button(action: {
-                
-            }) {
-                HStack {
-                    Text("Inköpslista")
-                        .font(.headline)
-                    Spacer()
-                    Image(systemName: "list.clipboard")
-                } 
-    
-            }
-            Spacer()
+            .padding(15)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .font(.title2)
+
         }
-       
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .navigationTitle("Text")
+
         
     }
 }

@@ -14,6 +14,8 @@
 		11D7AA16297F047000FDC720 /* FreshRecepiesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D7AA15297F047000FDC720 /* FreshRecepiesUITests.swift */; };
 		11D7AA18297F047000FDC720 /* FreshRecepiesUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D7AA17297F047000FDC720 /* FreshRecepiesUITestsLaunchTests.swift */; };
 		11DBAC06297F0A9000D84B22 /* StartPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC05297F0A9000D84B22 /* StartPageView.swift */; };
+		11DBAC09297F161100D84B22 /* RecepieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC08297F161100D84B22 /* RecepieView.swift */; };
+		11DBAC0B297FC8A100D84B22 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		11D7AA15297F047000FDC720 /* FreshRecepiesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshRecepiesUITests.swift; sourceTree = "<group>"; };
 		11D7AA17297F047000FDC720 /* FreshRecepiesUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshRecepiesUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		11DBAC05297F0A9000D84B22 /* StartPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPageView.swift; sourceTree = "<group>"; };
+		11DBAC08297F161100D84B22 /* RecepieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecepieView.swift; sourceTree = "<group>"; };
+		11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				11DBAC05297F0A9000D84B22 /* StartPageView.swift */,
+				11DBAC08297F161100D84B22 /* RecepieView.swift */,
+				11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -265,8 +271,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11DBAC0B297FC8A100D84B22 /* ShoppingListView.swift in Sources */,
 				11DBAC06297F0A9000D84B22 /* StartPageView.swift in Sources */,
 				11D7A9FB297F046E00FDC720 /* FreshRecepiesApp.swift in Sources */,
+				11DBAC09297F161100D84B22 /* RecepieView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
