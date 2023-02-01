@@ -26,8 +26,8 @@ struct ShoppingListView: View {
     }
 }
 
-struct ShoppingListView_Previews: PreviewProvider {
-    static var previews: some View {
-        ShoppingListView()
-    }
-}
+//struct ShoppingListView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ShoppingListView()
+//    }
+//}

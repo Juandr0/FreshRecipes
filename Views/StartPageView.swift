@@ -43,7 +43,17 @@ struct StartPageView: View {
             .controlSize(.large)
             .font(.title2)
             .onAppear{
-   
+
+
+
+//                db.collection("recepies").document().setData([
+//                    "name" : nyttRecept.name,
+//                    "portions" : nyttRecept.portions,
+//                    "ingredients" : nyttRecept.ingredients,
+//                    "allergenics" : nyttRecept.allergenics,
+//                    "instructions" : nyttRecept.instructions,
+//                    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes
+//                ])
             }
         }
         .navigationTitle("Text")

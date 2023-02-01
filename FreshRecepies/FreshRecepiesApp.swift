@@ -18,7 +18,8 @@ struct FreshRecepiesApp: App {
     
     var body: some Scene {
         WindowGroup {
-            StartPageView()
+//            StartPageView()
+            RecepieView()
         }
     }
 }

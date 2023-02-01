@@ -12,6 +12,9 @@
 		114A9C0D2988F78A006C6320 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 114A9C0C2988F78A006C6320 /* FirebaseFirestore */; };
 		114A9C0F2988F78A006C6320 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 114A9C0E2988F78A006C6320 /* FirebaseFirestoreSwift */; };
 		114A9C112988F78A006C6320 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 114A9C102988F78A006C6320 /* FirebaseFunctions */; };
+		114A9C1629890FCE006C6320 /* Recepie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114A9C1529890FCE006C6320 /* Recepie.swift */; };
+		114A9C1829891465006C6320 /* TempRecepieSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114A9C1729891465006C6320 /* TempRecepieSaver.swift */; };
+		114A9C1A29891952006C6320 /* RecepiesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114A9C1929891952006C6320 /* RecepiesList.swift */; };
 		11D7A9FB297F046E00FDC720 /* FreshRecepiesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D7A9FA297F046E00FDC720 /* FreshRecepiesApp.swift */; };
 		11D7A9FF297F047000FDC720 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11D7A9FE297F047000FDC720 /* Assets.xcassets */; };
 		11D7AA02297F047000FDC720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11D7AA01297F047000FDC720 /* Preview Assets.xcassets */; };
@@ -42,6 +45,9 @@
 
 /* Begin PBXFileReference section */
 		114A9C072988F6AC006C6320 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		114A9C1529890FCE006C6320 /* Recepie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recepie.swift; sourceTree = "<group>"; };
+		114A9C1729891465006C6320 /* TempRecepieSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempRecepieSaver.swift; sourceTree = "<group>"; };
+		114A9C1929891952006C6320 /* RecepiesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecepiesList.swift; sourceTree = "<group>"; };
 		11D7A9F7297F046E00FDC720 /* FreshRecepies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreshRecepies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11D7A9FA297F046E00FDC720 /* FreshRecepiesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshRecepiesApp.swift; sourceTree = "<group>"; };
 		11D7A9FE297F047000FDC720 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -85,10 +91,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		114A9C1429890FB0006C6320 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				114A9C1529890FCE006C6320 /* Recepie.swift */,
+				114A9C1729891465006C6320 /* TempRecepieSaver.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		11D7A9EE297F046E00FDC720 = {
 			isa = PBXGroup;
 			children = (
 				114A9C072988F6AC006C6320 /* GoogleService-Info.plist */,
+				114A9C1429890FB0006C6320 /* Model */,
 				11DBAC07297F0C9000D84B22 /* Views */,
 				11D7A9F9297F046E00FDC720 /* FreshRecepies */,
 				11D7AA0A297F047000FDC720 /* FreshRecepiesTests */,
@@ -148,6 +164,7 @@
 				11DBAC05297F0A9000D84B22 /* StartPageView.swift */,
 				11DBAC08297F161100D84B22 /* RecepieView.swift */,
 				11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */,
+				114A9C1929891952006C6320 /* RecepiesList.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -294,7 +311,10 @@
 			files = (
 				11DBAC0B297FC8A100D84B22 /* ShoppingListView.swift in Sources */,
 				11DBAC06297F0A9000D84B22 /* StartPageView.swift in Sources */,
+				114A9C1A29891952006C6320 /* RecepiesList.swift in Sources */,
 				11D7A9FB297F046E00FDC720 /* FreshRecepiesApp.swift in Sources */,
+				114A9C1829891465006C6320 /* TempRecepieSaver.swift in Sources */,
+				114A9C1629890FCE006C6320 /* Recepie.swift in Sources */,
 				11DBAC09297F161100D84B22 /* RecepieView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
