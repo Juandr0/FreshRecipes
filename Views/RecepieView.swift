@@ -21,10 +21,16 @@ struct RecepieView: View {
     var body: some View {
         List() {
             ForEach(recepiesList.recepies) {recepie in
+                
                 Section {
+           
                         VStack {
-                            Text(recepie.name)
-                                .font(.title3)
+                            HStack {
+                                Text(recepie.name)
+                                    .font(.title3)
+                                Spacer()
+                            }
+                           
                             HStack {
                                 Button(action: {
                                     //Send user to page that displays recepie,
