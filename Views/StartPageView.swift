@@ -17,7 +17,7 @@ struct StartPageView: View {
             
             VStack {
                 Text("Fresh Recepies")
-                    .font(.title)
+                    .font(.title3)
                 Spacer()
                 NavigationLink(destination: RecepieView()) {
                     HStack{
@@ -37,6 +37,7 @@ struct StartPageView: View {
                     }
                 } 
                Spacer()
+                
             }
             .padding(15)
             .buttonStyle(.borderedProminent)
