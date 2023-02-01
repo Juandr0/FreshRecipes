@@ -9,27 +9,11 @@ import SwiftUI
 import Firebase
 
 extension String {
-    func load() -> UIImage {
-        do {
-            //Converts string to URL
-            guard let url = URL(string: self) else {
-                return UIImage()
-            }
-            
-            //Convert url to data
-            let data: Data = try
-            Data(contentsOf: url)
-            
-            //creates UIImage ojbect from data
-            return UIImage(data: data)
-            ?? UIImage()
-            
-        }catch {
-            
-        }
-        return UIImage()
+    func toURL() -> URL? {
+        return URL(string: self)
     }
 }
+
 struct RecepieView: View {
     let db = Firestore.firestore()
     @StateObject var recepiesList = RecepiesList()
@@ -42,44 +26,56 @@ struct RecepieView: View {
                             Text(recepie.name)
                                 .font(.title3)
                             HStack {
-                                Image(uiImage: "https://www.nrm.se/images/18.12fc790b170e43ac14850734/1586852594332/s%C3%A4des%C3%A4rla600x350.png".load())
-                                    .resizable()
-                                    .scaledToFit()
+                                Button(action: {
+                                    //Send user to page that displays recepie,
+                                    print("Recepie info")
+                                }){
+                                    AsyncImage(url: URL(string: recepie.imageUrl)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } placeholder: {
+                                        Image(systemName: "takeoutbag.and.cup.and.straw")
+                                    }
+                                    .frame(width: 200, height: 100)
+                                    .cornerRadius(5)
+                                }
 
                                 
                                 VStack {
+                                    
                                     HStack {
                                         Spacer()
                                         Image(systemName: "clock")
                                         Text("\(recepie.cookingtimeMinutes) min")
-                                        
                                     }
 
                                     HStack {
                                         Spacer()
                                         Button(action: {
-                                            //Send user to page that displays recepie,
-                                            
-                                            print("klick")
+                                            //Set isAdded to !isAdded 
+                                            print("Add to cart")
                                         }){
-                                            Image(systemName: "cart")
+                                            Image(systemName: recepie.isAdded ? "minus.circle" : "cart")
+                                            
                                         }
+                                        .frame(width: 50)
                                         .buttonStyle(.bordered)
-                                        .background(.green)
+                                        .background(recepie.isAdded ? Color.red : Color.green)
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
+                                        .padding(EdgeInsets(top: 2, leading: 10, bottom: 2, trailing: 15))
+                                        
                                     }
                                 }
-                                
+                             
                             }
-                            
-                  
+                           
                         }
                 }
                 
-                //.listSectionSeparator(.visible)
-            }//.padding(EdgeInsets(top: 2, leading: 10, bottom: 2, trailing: 10))
-        }
+            }
+        }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
     }
 }
 

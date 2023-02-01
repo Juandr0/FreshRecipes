@@ -19,6 +19,9 @@ struct Recepie : Codable, Identifiable{
     var instructions              : [String]
     var cookingtimeMinutes        : Int
     var isAdded                   : Bool
+    var imageUrl                  : String
+    
+    
    
     
 //    func FetchAllergenics () {
