@@ -132,12 +132,12 @@ struct RecepiesListView: View{
                                     Image(systemName: isRecepieAddedToDb ? "minus.circle" : "cart")
                                 }
                                 
-                                .frame(width: 50)
+                                .frame(width: 50, height: 35)
                                 .buttonStyle(.bordered)
                                 .background(isRecepieAddedToDb ? Color.red : Color.green)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
-                                .padding(EdgeInsets(top: 2, leading: 10, bottom: 2, trailing: 15))
+                                .padding(EdgeInsets(top: 0, leading: 10, bottom: 2, trailing: 15))
                             }.onAppear(perform: checkForRecepie)
                         }
                     }
