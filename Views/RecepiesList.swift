@@ -5,17 +5,22 @@
 //  Created by Alexander Carlsson on 2023-01-31.
 //
 
+import SwiftUI
 import Foundation
 import Firebase
 import FirebaseCore
 import FirebaseFirestoreSwift
+import FirebaseAuth
 
 class RecepiesList : ObservableObject {
-    @Published var recepies = [Recepie]()
+    @Published var allRecepies = [Recepie]()
+    @Published var addedRecepieID = [String]()
     var db = Firestore.firestore()
+    var currentUser = Auth.auth().currentUser
     
     init () {
         FetchData()
+        listenToFirestore()
     }
     
     
@@ -36,27 +41,43 @@ class RecepiesList : ObservableObject {
                 
                     switch result {
                     case .success(let newRecepie) :
-                        self.recepies.append(newRecepie)
+                        self.allRecepies.append(newRecepie)
                     case .failure(let err) :
                         print("\(err)")
                     }
                     
-//                    let newRecepie = Recepie(id: document.documentID,
-//                                          name: document["name"] as! String,
-//                                          portions: document["portions"] as! Int,
-//                                          ingredients: document["ingredients"] as! [String],
-//                                          allergenics: document["allergenics"] as! [String],
-//                                          instructions: document["instructions"] as! [String],
-//                                          cookingtimeMinutes: document["cookingtimeMinutes"] as! Int)
-//
-//                    self.recepies.append(newRecepie)
                     }
                 }
             }
         }
+    
+    func listenToFirestore()  {
+        if let currentUser  {
+            db.collection("users").document(currentUser.uid).collection("addedRecepieID").addSnapshotListener{snapshot, err in
+                guard let snapshot = snapshot else {return}
+                if let err = err {
+                    print ("error getting documents \(err)")
+
+                } else {
+                    if self.addedRecepieID.count >= 0 {
+                        self.addedRecepieID.removeAll()
+                    }
+                    for document in snapshot.documents {
+                        self.addedRecepieID.append(document.documentID)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+   
+
+    
         
 
         
-    }
+    
     
 

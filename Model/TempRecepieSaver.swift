@@ -62,9 +62,95 @@ import Foundation
 //              "Stuvning: Ansa svampen och skär den ev i mindre bitar. Smörstek svampen tills den är genomstekt. Salta och svartpeppra.",
 //               "Späd med grädde och red med maizena till önskad konsistens.",
 //              "Fördela stuvningen över omeletten. Garnera med persilja eller annat grönt."],
-//cookingtimeMinutes: 40
+//cookingtimeMinutes: 40,
+//isAdded: false,
+//imageUrl: ""
 //)
 //
+//
+//
+
+
+//let nyttRecept = Recepie(
+//name: "Kasslergratäng med ananas och chilisås",
+//portions: 4,
+//ingredients: ["4 portioner ris",
+//              "1 purjolök",
+//              "1 orange paprika",
+//              "1 röd paprika",
+//              "2 msk smör",
+//              "1 förp krossade tomater med smak av färsk röd chili, ca 400 g",
+//              "3 msk finhackad persilja",
+//              "1 burk ananas i skivor, konserverad",
+//              "500g kassler",
+//              "2 dl vispgrädde",
+//              "1/2 dl chilisås",
+//              "2 msk sweed chili-sås",
+//              "2 dl riven lagrad ost, 31%"],
+//
+//
+//allergenics: ["gris", "fläsk", "ananas", "paprika", "purojök", "lök", "laktos", "grädde", "ost", "mjölkprotein"],
+//
+//instructions: ["Sätt ugnen på 225 grader. Koka riset enligt förpackningens anvisningar.",
+//               "Ansa och strimla löken. Tärna paprikorna. Hetta upp smöret, fräs lök och röd paprika blankt och smidigt utan att det tar färg.",
+//               "Tillsätt krossade tomater och finhackad persilja. Blanda samman riset med tomatsåsblandningen och lägg i en smord ugnsfast form.",
+//              "Skiva kasslern. Varva kassler och skivad ananas ovanpå risbädden. Strö över orange paprika.",
+//               "Vispa grädden lätt och blanda samman med chilisås och sweet chilisås. Bred ut såsen över kasslern och ananasen.",
+//              "Strö över riven ost, gratinera mitt i ugnen ca 20 minuter."],
+//cookingtimeMinutes: 35,
+//isAdded: false,
+//imageUrl: "https://firebasestorage.googleapis.com/v0/b/fresh-recepies.appspot.com/o/kasslergratang-med-ananas-och-chilisas_7889.avif?alt=media&token=3f5f05d1-82ab-4e06-8722-dd91699d3f11"
+//)
+//
+//
+
+
+//let nyttRecept = Recepie(
+//                name: "Vegetarisk lasagne",
+//                portions: 4-6,
+//                ingredients: ["16 st lasagneplattor (ej färska)",
+//                              "300 g Quorn färs (tinad)",
+//                              "2 morötter (finrivna)",
+//                              "1 röd paprika",
+//                              "100 g rotselleri (finriven)",
+//                              "400 g krossade tomater",
+//                              "1 msk grönsaksfond",
+//                              "2 msk honung",
+//                              "2 msk tomatpuré",
+//                              "2 st vitlöksklyftor",
+//                              "2 tsk oregano",
+//                              "1 1/2 tsk salt",
+//                              "Béchamelsås:",
+//                              "100 g smör",
+//                              "1 dl vetemjöl",
+//                              "2 dl matlagningsgrädde",
+//                              "7 dl mjölk",
+//                              "1 tsk salt",
+//                              "1 krm peppar",
+//                              "1 krm muskotnöt, nymalen",
+//                              "6 soltorkade tomater",
+//                              "250 gram mozzarella",
+//                              "färsk salvia eller rosmarin",
+//                              "1 dl parmesan"],
+//
+//
+//
+//                allergenics: ["gluten", "mjöl", "smör", "laktos", "mjölkprotein", "ost"],
+//
+//                instructions: ["1. Sätt ugnen på 190 grader.",
+//                               "2. Quornfärsåsen: Skala och finhacka vitlöken. Blanda alla ingredienser till såsen i en bunke och rör om ordentligt.",
+//                               "3. Béchamelsås: Smält smöret i en kastrull. Vispa ner mjölet. Späd med mjölken/grädden, lite i taget. Sjud 7–10 minuter på låg värme under omrörning och smaka av med salt och kryddor.",
+//                              "4. Smörj en ugnssäker form med smör. Varva quornfärssås, béchamelsås, och lasagneplattor. Börja och avsluta med béchamelsås, toppa med mozzarella i stora bitar och soltorkade tomater.",
+//                               "5. Gratinera i ugnen 40–45 minuter tills lasagnen är mjuk och har fått fin gyllenbrun färg.",
+//                              "6. Servera med parmesanosten och en god sallad."],
+//
+//                cookingtimeMinutes: 60,
+//                isAdded: false,
+//                imageUrl: "https://firebasestorage.googleapis.com/v0/b/fresh-recepies.appspot.com/o/kasslergratang-med-ananas-och-chilisas_7889.avif?alt=media&token=3f5f05d1-82ab-4e06-8722-dd91699d3f11"
+//                )
+//
+//
+
 
 //
 //db.collection("recepies").document().setData( [
@@ -72,7 +158,10 @@ import Foundation
 //    "portions" : nyttRecept.portions,
 //    "ingredients" : nyttRecept.ingredients,
 //    "allergenics" : nyttRecept.allergenics,
-//    "instructions" : nyttRecept.instructions
-//    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes
+//    "instructions" : nyttRecept.instructions,
+//    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
+//    "isAdded" : nyttRecept.isAdded,
+//    "imageUrl" : nyttRecept.imageUrl
+//
 //]
 //)
