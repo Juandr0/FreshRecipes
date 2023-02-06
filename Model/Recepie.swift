@@ -22,7 +22,7 @@ struct Recepie : Codable, Identifiable{
     var imageUrl                  : String
     
     
-   
+
     
 //    func FetchAllergenics () {
 //
