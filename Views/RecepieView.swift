@@ -27,21 +27,22 @@ struct RecepieView: View {
     
     
     var body: some View {
+        NavigationView {
             VStack {
                 TextField("Sök på ingredienser och maträtter..", text: $searchInput)
                     .textFieldStyle(.roundedBorder)
-                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
                 //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
                 
                 List() {
                     ForEach(recepies.allRecepies) {recepie in
-                        RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                        NavigationLink(destination: RecepieInstructionView(currentRecepie: recepie)){
+                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                        }
                     }
-                }
-                
-            }.padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
-                .listStyle(.insetGrouped)
-            
+                }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                    .listStyle(.inset)
+            }
                 .onAppear{
                     //init recept
                     
@@ -59,9 +60,11 @@ struct RecepieView: View {
                     //                ]
                     //                )
                        
-                }
+            }
         }
+
     }
+}
     
 
 
@@ -86,7 +89,8 @@ struct RecepiesListView: View{
                     }
                     HStack {
                         Button(action: {
-                            //Send user to page that displays recepie,
+                            //RecepieInstructionView(currentRecepie: recepie)
+                            
                             print("Recepie info")
                         }){
                             AsyncImage(url: URL(string: recepie.imageUrl)) { image in
@@ -140,7 +144,9 @@ struct RecepiesListView: View{
                     }
                 }
             }
-        }
+            .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
+           
+    }
     
     func checkForRecepie() {
         isRecepieAddedToDb = recepies.addedRecepieID.contains(recepie.id!)
