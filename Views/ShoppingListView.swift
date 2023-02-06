@@ -18,8 +18,7 @@ struct ShoppingListView: View {
                     }
                     
                 }
-                
-        
+
                 List() {
                     Text("2")
                 }

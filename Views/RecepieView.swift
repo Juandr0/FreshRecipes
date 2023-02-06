@@ -27,45 +27,42 @@ struct RecepieView: View {
     
     
     var body: some View {
-        
-        VStack {
-            TextField("Sök på ingredienser och maträtter..", text: $searchInput)
-                .textFieldStyle(.roundedBorder)
-                .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
-            
-            List() {
-                ForEach(recepies.allRecepies) {recepie in
-                    RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+            VStack {
+                TextField("Sök på ingredienser och maträtter..", text: $searchInput)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
+                
+                List() {
+                    ForEach(recepies.allRecepies) {recepie in
+                        RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                    }
                 }
-            }
+                
+            }.padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
+                .listStyle(.insetGrouped)
             
-        }.padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
-            .listStyle(.insetGrouped)
-        
-            .onAppear{
-                //init recept
-                
-                
-                //                db.collection("recepies").document().setData( [
-                //                    "name" : nyttRecept.name,
-                //                    "portions" : nyttRecept.portions,
-                //                    "ingredients" : nyttRecept.ingredients,
-                //                    "allergenics" : nyttRecept.allergenics,
-                //                    "instructions" : nyttRecept.instructions,
-                //                    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
-                //                    "isAdded" : nyttRecept.isAdded,
-                //                    "imageUrl" : nyttRecept.imageUrl
-                //
-                //                ]
-                //                )
-                
-                
-            }
+                .onAppear{
+                    //init recept
+                    
+                    
+                    //                db.collection("recepies").document().setData( [
+                    //                    "name" : nyttRecept.name,
+                    //                    "portions" : nyttRecept.portions,
+                    //                    "ingredients" : nyttRecept.ingredients,
+                    //                    "allergenics" : nyttRecept.allergenics,
+                    //                    "instructions" : nyttRecept.instructions,
+                    //                    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
+                    //                    "isAdded" : nyttRecept.isAdded,
+                    //                    "imageUrl" : nyttRecept.imageUrl
+                    //
+                    //                ]
+                    //                )
+                       
+                }
+        }
     }
-}
     
- 
 
 
 struct RecepiesListView: View{
