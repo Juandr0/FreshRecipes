@@ -28,12 +28,10 @@ struct RecepieView: View {
     var body: some View {
         NavigationView {
             VStack {
-//                TextField("Sök på ingredienser och maträtter..", text: $searchWord)
-//                    .textFieldStyle(.roundedBorder)
-//                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
-                //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
                 List() {
                     ForEach(recepies.allRecepies.filter {
+                        
+                        //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
                         self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
                     }, id: \.self) {recepie in
                         NavigationLink(destination: RecepieInstructionView(currentRecepie: recepie)){
@@ -44,11 +42,6 @@ struct RecepieView: View {
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
                     .searchable(text: $searchQuery, prompt: "Sök på maträtter och ingridienser")
-
-                
-//                    .onChange(of: searchQuery) { newQuery in
-//                        recepies.se
-                
             }
                 .onAppear{
                     //init recept
@@ -99,9 +92,6 @@ struct RecepiesListView: View{
                     }
                     HStack {
                         Button(action: {
-                            //RecepieInstructionView(currentRecepie: recepie)
-                            
-                            print("Recepie info")
                         }){
                             AsyncImage(url: URL(string: recepie.imageUrl)) { image in
                                 image
