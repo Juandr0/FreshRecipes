@@ -30,11 +30,7 @@ class RecepiesList : ObservableObject {
             if let err = err {
                 print("Error getting documents: \(err)")
             } else {
-                
-            
-                
                 for document in snapshot!.documents {
-                    
                     let result = Result {
                         try document.data(as: Recepie.self)
                     }
@@ -50,6 +46,7 @@ class RecepiesList : ObservableObject {
                 }
             }
         }
+    
     
     func listenToFirestore()  {
         if let currentUser  {

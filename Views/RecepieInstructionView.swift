@@ -11,6 +11,7 @@ import SwiftUI
 struct RecepieInstructionView: View {
     let currentRecepie : Recepie
     @State var isCollapsed = true
+
     
     var body : some View {
      
@@ -52,6 +53,7 @@ struct RecepieInstructionView: View {
                     Text("\(currentRecepie.cookingtimeMinutes) min")
                 } .padding(.trailing, 20)
             }
+            
             if !isCollapsed {
                 ForEach (currentRecepie.allergenics, id: \.self) { text in
                     HStack{

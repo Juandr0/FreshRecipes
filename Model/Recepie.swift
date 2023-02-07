@@ -18,8 +18,8 @@ struct Recepie : Codable, Identifiable{
     var allergenics               : [String]
     var instructions              : [String]
     var cookingtimeMinutes        : Int
-    var isAdded                   : Bool  //Ska tas bort
     var imageUrl                  : String
+    
     
     
 

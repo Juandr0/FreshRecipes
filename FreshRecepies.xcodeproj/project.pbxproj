@@ -96,6 +96,7 @@
 		114A9C1429890FB0006C6320 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				114A9C1929891952006C6320 /* RecepiesList.swift */,
 				114A9C1529890FCE006C6320 /* Recepie.swift */,
 				114A9C1729891465006C6320 /* TempRecepieSaver.swift */,
 			);
@@ -166,7 +167,6 @@
 				11DBAC05297F0A9000D84B22 /* StartPageView.swift */,
 				11DBAC08297F161100D84B22 /* RecepieView.swift */,
 				11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */,
-				114A9C1929891952006C6320 /* RecepiesList.swift */,
 				11FA2C5029910E690000881F /* RecepieInstructionView.swift */,
 			);
 			path = Views;

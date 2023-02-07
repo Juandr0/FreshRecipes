@@ -20,18 +20,17 @@ struct RecepieView: View {
     let db = Firestore.firestore()
     @StateObject var recepies = RecepiesList()
 
-    @State var searchInput = ""
+    @State var searchQuery = ""
     @State var signedIn = false
     let currentUser = Auth.auth().currentUser
-    
     
     
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Sök på ingredienser och maträtter..", text: $searchInput)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
+//                TextField("Sök på ingredienser och maträtter..", text: $searchWord)
+//                    .textFieldStyle(.roundedBorder)
+//                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
                 //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
                 
                 List() {
@@ -42,6 +41,10 @@ struct RecepieView: View {
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
+                    .searchable(text: $searchQuery, prompt: "Sök på maträtter och ingridienser")
+//                    .onChange(of: searchQuery) { newQuery in
+//                        recepies.se
+                
             }
                 .onAppear{
                     //init recept
