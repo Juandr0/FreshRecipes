@@ -41,7 +41,7 @@ struct RecepieView: View {
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
-                    .searchable(text: $searchQuery, prompt: "Sök på maträtter och ingridienser")
+                    .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
             }
                 .onAppear{
                     //init recept
