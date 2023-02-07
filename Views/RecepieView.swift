@@ -32,16 +32,20 @@ struct RecepieView: View {
 //                    .textFieldStyle(.roundedBorder)
 //                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
                 //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
-                
                 List() {
-                    ForEach(recepies.allRecepies) {recepie in
+                    ForEach(recepies.allRecepies.filter {
+                        self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+                    }, id: \.self) {recepie in
                         NavigationLink(destination: RecepieInstructionView(currentRecepie: recepie)){
                             RecepiesListView(recepies: recepies, db: db, recepie: recepie)
                         }
+                        .navigationTitle("Recept")
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
                     .searchable(text: $searchQuery, prompt: "Sök på maträtter och ingridienser")
+
+                
 //                    .onChange(of: searchQuery) { newQuery in
 //                        recepies.se
                 
@@ -67,6 +71,8 @@ struct RecepieView: View {
         }
 
     }
+    
+
 }
     
 
@@ -76,6 +82,7 @@ struct RecepiesListView: View{
     
     @ObservedObject var recepies : RecepiesList
     @State var isRecepieAddedToDb = false
+    @State var searchQuery = ""
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
