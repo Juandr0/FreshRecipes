@@ -11,6 +11,7 @@ import SwiftUI
 struct RecepieInstructionView: View {
     let currentRecepie : Recepie
     @State var isCollapsed = true
+
     
     var body : some View {
      
@@ -37,7 +38,7 @@ struct RecepieInstructionView: View {
                     .foregroundColor(.red)
                     .onTapGesture {
                         self.isCollapsed.toggle()
-                    }
+                    }.padding(.bottom, 10)
                 Image(systemName: "triangle.tophalf.filled" )
                     .foregroundColor(.red)
                     .rotationEffect(.degrees(isCollapsed ? 90 : 180))
@@ -52,6 +53,7 @@ struct RecepieInstructionView: View {
                     Text("\(currentRecepie.cookingtimeMinutes) min")
                 } .padding(.trailing, 20)
             }
+            
             if !isCollapsed {
                 ForEach (currentRecepie.allergenics, id: \.self) { text in
                     HStack{

@@ -20,28 +20,28 @@ struct RecepieView: View {
     let db = Firestore.firestore()
     @StateObject var recepies = RecepiesList()
 
-    @State var searchInput = ""
+    @State var searchQuery = ""
     @State var signedIn = false
     let currentUser = Auth.auth().currentUser
-    
     
     
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Sök på ingredienser och maträtter..", text: $searchInput)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(EdgeInsets(top: 50, leading: 20, bottom: 0, trailing: 20))
-                //Skapa en picker eller liknande här som agerar drop down för filtrering av ingredienser
-                
                 List() {
-                    ForEach(recepies.allRecepies) {recepie in
+                    ForEach(recepies.allRecepies.filter {
+                        
+                        //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
+                        self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+                    }, id: \.self) {recepie in
                         NavigationLink(destination: RecepieInstructionView(currentRecepie: recepie)){
                             RecepiesListView(recepies: recepies, db: db, recepie: recepie)
                         }
+                        .navigationTitle("Recept")
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
+                    .searchable(text: $searchQuery, prompt: "Sök på maträtter och ingridienser")
             }
                 .onAppear{
                     //init recept
@@ -64,6 +64,8 @@ struct RecepieView: View {
         }
 
     }
+    
+
 }
     
 
@@ -73,6 +75,7 @@ struct RecepiesListView: View{
     
     @ObservedObject var recepies : RecepiesList
     @State var isRecepieAddedToDb = false
+    @State var searchQuery = ""
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
@@ -89,9 +92,6 @@ struct RecepiesListView: View{
                     }
                     HStack {
                         Button(action: {
-                            //RecepieInstructionView(currentRecepie: recepie)
-                            
-                            print("Recepie info")
                         }){
                             AsyncImage(url: URL(string: recepie.imageUrl)) { image in
                                 image

@@ -28,7 +28,6 @@ struct StartPageView: View {
                         Text("Shopping list")
                   
             }
-           
         }
         
         
