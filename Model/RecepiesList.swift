@@ -15,17 +15,74 @@ import FirebaseAuth
 class RecepiesList : ObservableObject {
     @Published var allRecepies = [Recepie]()
     @Published var addedRecepieID = [String]()
+    @Published var userItemList = [Item]()
+    @Published var items = [Item]()
+    @Published var boughtItems = [Item]()
+    
+    
     var db = Firestore.firestore()
     var currentUser = Auth.auth().currentUser
+
     
     init () {
         FetchData()
         listenToFirestore()
+        listenToUserRecepies() 
     }
     
     
-    func FetchData() {
+    
+    
+    func listenToUserRecepies()  {
+        if let currentUser  {
+            db.collection("users").document(currentUser.uid).collection("userItems").addSnapshotListener{snapshot, err in
+                guard let snapshot = snapshot else {return}
+                if let err = err {
+                    print ("error getting documents \(err)")
+
+                } else {
+                    if !self.items.isEmpty {
+                        self.items.removeAll()
+                    }
+                    for document in snapshot.documents {
+                        let result = Result {
+                            try document.data(as: Item.self)
+                        }
+                        
+                        switch result {
+                           case .success(let item) :
+                            self.items.append(item)
+                           
+                           case .failure(let err) :
+                               print("Error decoding item \(err)")
+                           }
+                        
+                        }
+                       
+                        }
+                    }
+                }
+            }
         
+    
+    
+    
+    func FetchAddedRecepies() {
+        for addedID in addedRecepieID {
+            for recepie in allRecepies {
+                if recepie.id == addedID {
+                    for itemToBuy in recepie.ingredients {
+                        userItemList.append(Item(itemName: itemToBuy))
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    func FetchData() {
         db.collection("recepies").getDocuments() { (snapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")

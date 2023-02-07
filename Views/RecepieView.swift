@@ -114,19 +114,44 @@ struct RecepiesListView: View{
                             HStack {
                                 Spacer()
                                 Button(action: {
+                                    //Removes item from cart
                                     let searchString = recepie.id
                                     if recepies.addedRecepieID.contains(searchString!){
                                         if let currentUser {
                                             db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
+                                           // recepies.addedRecepieID.remove(atOffsets: recepie.id)
                                                 isRecepieAddedToDb = false
-                                            print("removed from cart")
+                                            
+                                            
+                                            
+                                            if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
+                                                recepies.addedRecepieID.remove(at: index)
+
+                                            }
+                                            
+                                            
+                                            
                                         }
                                       
+                                        //Adds item to cart
                                     } else if !recepies.addedRecepieID.contains(searchString!){
                                         if let currentUser {
-                                            db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).setData([:])
+                                           var docRef = db.collection("users").document(currentUser.uid)
+                                            docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
+                                
+                                            for ingredient in recepie.ingredients {
+                                                let newItem = Item(itemName: ingredient)
+                                                docRef.collection("userItems").document().setData([
+                                                
+                                                    "itemName" : newItem.itemName,
+                                                    "isBought" : newItem.isBought
+
+                                                ])
+                                            }
+                                           
+                                            
                                             isRecepieAddedToDb = true
-                                            print("Added to cart")
+                                          
                                         }
                                     }
                                 }){
