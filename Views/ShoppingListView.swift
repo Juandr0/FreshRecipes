@@ -11,7 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 
 struct ShoppingListView: View {
-    @StateObject var recepies = RecepiesList()
+    @ObservedObject var recepies : RecepiesList
     var currentUser = Auth.auth().currentUser
     
     var db = Firestore.firestore()
@@ -42,7 +42,9 @@ struct ShoppingListView: View {
                                         .backgroundStyle(.white)
                                 }
                             }
-                        }
+                    }.onAppear{
+                        recepies.listenToUserRecepies()
+                    }
                     
                     ForEach(recepies.userItems){ item in
                         if item.isBought{
@@ -89,8 +91,8 @@ struct ShoppingListView: View {
 
 
 
-struct ShoppingListView_Previews: PreviewProvider {
-    static var previews: some View {
-        ShoppingListView()
-    }
-}
+//struct ShoppingListView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ShoppingListView()
+//    }
+//}

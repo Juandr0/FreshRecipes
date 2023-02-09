@@ -9,19 +9,20 @@ import SwiftUI
 import Firebase
 
 struct StartPageView: View {
+    @StateObject var recepies = RecepiesList()
     let db = Firestore.firestore()
     
     var body: some View {
         
         TabView {
-                RecepieView()
+            RecepieView(recepies : recepies)
                 .tabItem {
                     Image(systemName: "fork.knife")
                     Text("Recepies")
                 }
     
             VStack {
-                ShoppingListView()
+                ShoppingListView(recepies : recepies)
             }
                     .tabItem{
                         Image(systemName: "list.clipboard")
