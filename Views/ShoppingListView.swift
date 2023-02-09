@@ -34,8 +34,7 @@ struct ShoppingListView: View {
                                             docRef.document(item.id!).updateData([
                                                 "isBought" : !item.isBought
                                             ])
-                                        }
-                                        
+                                        }  
                                     }))
                                     Spacer()
                                     Image(systemName: "square")
