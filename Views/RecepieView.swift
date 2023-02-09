@@ -77,6 +77,8 @@ struct RecepiesListView: View{
     @State var isRecepieAddedToDb = false
     @State var searchQuery = ""
     
+    @State var isFBdeleteLoopComplete = false
+    
     let currentUser = Auth.auth().currentUser
     let db : Firestore
     let recepie : Recepie
@@ -121,26 +123,40 @@ struct RecepiesListView: View{
                                     var docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                         
                                         if recepies.addedRecepieID.contains(searchString!){
-                                        for recepieIngredient in recepie.ingredients {
-                                            for addedIngredient in recepies.userItems{
-                                                 if recepieIngredient == addedIngredient.itemName{
-                                                     docRef.document(addedIngredient.id!).delete()
-                                                 }
-                                             }
-                                         }
-                                    
-                                        
+                                            
+                                        //dessa rader måste vara problemet
+//                                        for recepieIngredient in recepie.ingredients {
+//                                            for addedIngredient in recepies.userItems{
+//                                                 if recepieIngredient == addedIngredient.itemName{
+//                                                     docRef.document(addedIngredient.id!).delete()
+//                                                 }
+//                                             }
+//                                         }
+                                          
+                                            //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
+                                            for recepieIngredient in recepie.ingredients {
+                                                if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
+                                                    docRef.document(recepies.userItems[index].id!).delete()
+                                                }
+                                            }
+                                            
+                                            isFBdeleteLoopComplete = true
                                         print("DeleteLoop FB ITEMS Complete")
                                     
-                                            
-                                            db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
-                                            isRecepieAddedToDb = false
-                                            
-                                            
-                                            if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
-                                                recepies.addedRecepieID.remove(at: index)
+                                            if isFBdeleteLoopComplete {
+                                                db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
+                                                isRecepieAddedToDb = false
+                                                
+                                                
+                                                if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
+                                                    recepies.addedRecepieID.remove(at: index)
+                                                }
+                                                print("DeleteLoop addedRecepieID DOCUMENT Complete")
+                                                
+                                                //reset
+                                                isFBdeleteLoopComplete = false
                                             }
-                                            print("DeleteLoop addedRecepieID DOCUMENT Complete")
+                                         
                                         }
                                   
                                      else {
