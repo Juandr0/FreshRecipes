@@ -119,17 +119,19 @@ struct RecepiesListView: View{
                                     if let currentUser {
                                         
                                     var docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                         
+                                        
+                                        if recepies.addedRecepieID.contains(searchString!){
                                         for recepieIngredient in recepie.ingredients {
                                             for addedIngredient in recepies.userItems{
                                                  if recepieIngredient == addedIngredient.itemName{
                                                      docRef.document(addedIngredient.id!).delete()
                                                  }
+                                             }
                                          }
-                                     }
                                     
-                                 
-                                        if recepies.addedRecepieID.contains(searchString!){
+                                        
+                                        print("DeleteLoop FB ITEMS Complete")
+                                    
                                             
                                             db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
                                             isRecepieAddedToDb = false
@@ -138,19 +140,10 @@ struct RecepiesListView: View{
                                             if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
                                                 recepies.addedRecepieID.remove(at: index)
                                             }
+                                            print("DeleteLoop addedRecepieID DOCUMENT Complete")
                                         }
-                                    
-                                            //Vad vill jag ska hända?
-                                            //ta bort alla items som existerar i ett recept från userItems doc i FB när receptet klickas ur
-                                            //i denna view. Dvs denna kod är på rätt ställe
-                                            
-                                            //reversa följande kod så att den raderas istället
-                                            
-                                        
-                                        
-                                      
-                                        //Adds item to cart
-                                     else if !recepies.addedRecepieID.contains(searchString!){
+                                  
+                                     else {
 
                                            var docRef = db.collection("users").document(currentUser.uid)
                                             docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
@@ -166,7 +159,9 @@ struct RecepiesListView: View{
                                             }
                                            
                                             isRecepieAddedToDb = true
+                                         print("added items Complete")
                                         }
+                                 
                                     }
                                 }){
                                     Image(systemName: isRecepieAddedToDb ? "minus.circle" : "cart")

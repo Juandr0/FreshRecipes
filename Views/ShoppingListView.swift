@@ -42,8 +42,6 @@ struct ShoppingListView: View {
                                         .backgroundStyle(.white)
                                 }
                             }
-                    }.onAppear{
-                        recepies.listenToUserRecepies()
                     }
                     
                     ForEach(recepies.userItems){ item in
@@ -69,7 +67,14 @@ struct ShoppingListView: View {
                   
                     
                 }.listStyle(.inset)
-                    .navigationTitle("Inköpslista")
+                    .navigationBarTitle("Inköpslista")
+                    .navigationBarItems(trailing: NavigationLink(destination: AddRecepieItemsManuallyView()) {
+                        HStack {
+                            Text("Lägg till")
+                            Image(systemName: "plus.circle")
+                        }
+                       
+                    })
                    
             }
             }
@@ -81,18 +86,3 @@ struct ShoppingListView: View {
         
     
 
-    
-    
-
-
-
-
-
-
-
-
-//struct ShoppingListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ShoppingListView()
-//    }
-//}

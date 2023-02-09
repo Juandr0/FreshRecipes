@@ -53,14 +53,13 @@ class RecepiesList : ObservableObject {
                            case .failure(let err) :
                                print("Error decoding item \(err)")
                            }
-                        
-                        }
-                       
                         }
                     }
                 }
             }
-        
+        print("function listenToUserRecepies finished")
+        }
+    
     
     
     
@@ -93,12 +92,13 @@ class RecepiesList : ObservableObject {
                     case .success(let newRecepie) :
                         self.allRecepies.append(newRecepie)
                     case .failure(let err) :
-                        print("\(err)")
+                        Swift.print("\(err)")
                     }
                     
                     }
                 }
             }
+        print("function FetchData finished")
         }
     
     
@@ -110,7 +110,7 @@ class RecepiesList : ObservableObject {
                     print ("error getting documents \(err)")
 
                 } else {
-                    if self.addedRecepieID.count >= 0 {
+                    if !self.addedRecepieID.isEmpty {
                         self.addedRecepieID.removeAll()
                     }
                     for document in snapshot.documents {
@@ -119,7 +119,10 @@ class RecepiesList : ObservableObject {
                     }
                 }
             }
+        print("function listenToFirestore finished")
         }
+    
+
     }
 
     
