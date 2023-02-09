@@ -165,9 +165,7 @@ struct RecepiesListView: View{
                                                 ])
                                             }
                                            
-                                            
                                             isRecepieAddedToDb = true
-                                          
                                         }
                                     }
                                 }){

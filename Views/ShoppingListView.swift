@@ -56,18 +56,22 @@ struct ShoppingListView: View {
                                     }
                                     
                                 }))
+                                .strikethrough()
                                 Spacer()
                                 Image(systemName: "checkmark.square")
                                     .backgroundStyle(.white)
+                                  
                             }
                         }
-                    }
+                    } .foregroundColor(.green)
+                  
                     
-                }.listStyle(.grouped)
+                }.listStyle(.inset)
                     .navigationTitle("Inköpslista")
-          
+                   
             }
             }
+
         }
         
     }
@@ -85,8 +89,8 @@ struct ShoppingListView: View {
 
 
 
-//struct ShoppingListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ShoppingListView()
-//    }
-//}
+struct ShoppingListView_Previews: PreviewProvider {
+    static var previews: some View {
+        ShoppingListView()
+    }
+}
