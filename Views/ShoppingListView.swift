@@ -24,28 +24,27 @@ struct ShoppingListView: View {
         
         NavigationView {
             VStack {
-                List(recepies.userItems){item in
-                    if !item.isBought{
-                        HStack{
-                            Button(item.itemName, action: ({
-                                if let currentUser {
-                                    let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    docRef.document(item.id!).updateData([
-                                        "isBought" : !item.isBought
-                                    ])
+                List {
+                    ForEach(recepies.userItems){item in
+                            if !item.isBought{
+                                HStack{
+                                    Button(item.itemName, action: ({
+                                        if let currentUser {
+                                            let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                            docRef.document(item.id!).updateData([
+                                                "isBought" : !item.isBought
+                                            ])
+                                        }
+                                        
+                                    }))
+                                    Spacer()
+                                    Image(systemName: "square")
+                                        .backgroundStyle(.white)
                                 }
-                                
-                            }))
-                            Spacer()
-                            Image(systemName: "square")
-                                .backgroundStyle(.white)
+                            }
                         }
-                    }
-                }.listStyle(.grouped)
-                    .navigationTitle("Inköpslista")
-
-
-                    List(recepies.userItems){ item in
+                    
+                    ForEach(recepies.userItems){ item in
                         if item.isBought{
                             HStack{
                                 Button(item.itemName, action: ({
@@ -62,11 +61,11 @@ struct ShoppingListView: View {
                                     .backgroundStyle(.white)
                             }
                         }
-                    }.listStyle(.grouped)
-                    .strikethrough()
-
-            }.onAppear{
-                recepies.listenToUserRecepies()
+                    }
+                    
+                }.listStyle(.grouped)
+                    .navigationTitle("Inköpslista")
+          
             }
             }
         }
