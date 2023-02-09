@@ -15,8 +15,7 @@ import FirebaseAuth
 class RecepiesList : ObservableObject {
     @Published var allRecepies = [Recepie]()
     @Published var addedRecepieID = [String]()
-    @Published var userItemList = [Item]()
-    @Published var items = [Item]()
+    @Published var userItems = [Item]()
     @Published var boughtItems = [Item]()
     
     
@@ -30,9 +29,7 @@ class RecepiesList : ObservableObject {
         listenToUserRecepies() 
     }
     
-    
-    
-    
+ 
     func listenToUserRecepies()  {
         if let currentUser  {
             db.collection("users").document(currentUser.uid).collection("userItems").addSnapshotListener{snapshot, err in
@@ -41,8 +38,8 @@ class RecepiesList : ObservableObject {
                     print ("error getting documents \(err)")
 
                 } else {
-                    if !self.items.isEmpty {
-                        self.items.removeAll()
+                    if !self.userItems.isEmpty {
+                        self.userItems.removeAll()
                     }
                     for document in snapshot.documents {
                         let result = Result {
@@ -51,7 +48,7 @@ class RecepiesList : ObservableObject {
                         
                         switch result {
                            case .success(let item) :
-                            self.items.append(item)
+                            self.userItems.append(item)
                            
                            case .failure(let err) :
                                print("Error decoding item \(err)")
@@ -72,7 +69,7 @@ class RecepiesList : ObservableObject {
             for recepie in allRecepies {
                 if recepie.id == addedID {
                     for itemToBuy in recepie.ingredients {
-                        userItemList.append(Item(itemName: itemToBuy))
+                        userItems.append(Item(itemName: itemToBuy))
                     }
                 }
             }

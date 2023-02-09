@@ -11,7 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 
 struct ShoppingListView: View {
-    @ObservedObject var recepies = RecepiesList()
+    @StateObject var recepies = RecepiesList()
     var currentUser = Auth.auth().currentUser
     
     var db = Firestore.firestore()
@@ -24,7 +24,7 @@ struct ShoppingListView: View {
         
         NavigationView {
             VStack {
-                List(recepies.items){item in
+                List(recepies.userItems){item in
                     if !item.isBought{
                         HStack{
                             Button(item.itemName, action: ({
@@ -45,7 +45,7 @@ struct ShoppingListView: View {
                     .navigationTitle("Inköpslista")
 
 
-                    List(recepies.items){ item in
+                    List(recepies.userItems){ item in
                         if item.isBought{
                             HStack{
                                 Button(item.itemName, action: ({
@@ -65,7 +65,9 @@ struct ShoppingListView: View {
                     }.listStyle(.grouped)
                     .strikethrough()
 
-                }
+            }.onAppear{
+                recepies.listenToUserRecepies()
+            }
             }
         }
         

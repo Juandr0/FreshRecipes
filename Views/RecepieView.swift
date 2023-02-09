@@ -116,31 +116,47 @@ struct RecepiesListView: View{
                                 Button(action: {
                                     //Removes item from cart
                                     let searchString = recepie.id
-                                    if recepies.addedRecepieID.contains(searchString!){
-                                        if let currentUser {
-                                            db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
-                                           // recepies.addedRecepieID.remove(atOffsets: recepie.id)
-                                                isRecepieAddedToDb = false
+                                    if let currentUser {
+                                        
+                                    var docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                         
+                                        for recepieIngredient in recepie.ingredients {
+                                            for addedIngredient in recepies.userItems{
+                                                 if recepieIngredient == addedIngredient.itemName{
+                                                     docRef.document(addedIngredient.id!).delete()
+                                                 }
+                                         }
+                                     }
+                                    
+                                 
+                                        if recepies.addedRecepieID.contains(searchString!){
                                             
+                                            db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
+                                            isRecepieAddedToDb = false
                                             
                                             
                                             if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
                                                 recepies.addedRecepieID.remove(at: index)
-
                                             }
-                                            
-                                            
-                                            
                                         }
+                                    
+                                            //Vad vill jag ska hända?
+                                            //ta bort alla items som existerar i ett recept från userItems doc i FB när receptet klickas ur
+                                            //i denna view. Dvs denna kod är på rätt ställe
+                                            
+                                            //reversa följande kod så att den raderas istället
+                                            
+                                        
+                                        
                                       
                                         //Adds item to cart
-                                    } else if !recepies.addedRecepieID.contains(searchString!){
-                                        if let currentUser {
+                                     else if !recepies.addedRecepieID.contains(searchString!){
+
                                            var docRef = db.collection("users").document(currentUser.uid)
                                             docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                 
-                                            for ingredient in recepie.ingredients {
-                                                let newItem = Item(itemName: ingredient)
+                                            for recepieIngredient in recepie.ingredients {
+                                                let newItem = Item(itemName: recepieIngredient)
                                                 docRef.collection("userItems").document().setData([
                                                 
                                                     "itemName" : newItem.itemName,
