@@ -18,7 +18,7 @@ extension String {
 
 struct RecepieView: View {
     let db = Firestore.firestore()
-    @StateObject var recepies = RecepiesList()
+    @ObservedObject var recepies : RecepiesList
 
     @State var searchQuery = ""
     @State var signedIn = false
@@ -165,9 +165,7 @@ struct RecepiesListView: View{
                                                 ])
                                             }
                                            
-                                            
                                             isRecepieAddedToDb = true
-                                          
                                         }
                                     }
                                 }){
@@ -199,8 +197,8 @@ struct RecepiesListView: View{
 
 
 
-struct RecepieView_Previews: PreviewProvider {
-    static var previews: some View {
-        RecepieView()
-    }
-}
+//struct RecepieView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RecepieView()
+//    }
+//}

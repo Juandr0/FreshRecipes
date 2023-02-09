@@ -11,7 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 
 struct ShoppingListView: View {
-    @StateObject var recepies = RecepiesList()
+    @ObservedObject var recepies : RecepiesList
     var currentUser = Auth.auth().currentUser
     
     var db = Firestore.firestore()
@@ -24,28 +24,29 @@ struct ShoppingListView: View {
         
         NavigationView {
             VStack {
-                List(recepies.userItems){item in
-                    if !item.isBought{
-                        HStack{
-                            Button(item.itemName, action: ({
-                                if let currentUser {
-                                    let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    docRef.document(item.id!).updateData([
-                                        "isBought" : !item.isBought
-                                    ])
+                List {
+                    ForEach(recepies.userItems){item in
+                            if !item.isBought{
+                                HStack{
+                                    Button(item.itemName, action: ({
+                                        if let currentUser {
+                                            let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                            docRef.document(item.id!).updateData([
+                                                "isBought" : !item.isBought
+                                            ])
+                                        }
+                                        
+                                    }))
+                                    Spacer()
+                                    Image(systemName: "square")
+                                        .backgroundStyle(.white)
                                 }
-                                
-                            }))
-                            Spacer()
-                            Image(systemName: "square")
-                                .backgroundStyle(.white)
-                        }
+                            }
+                    }.onAppear{
+                        recepies.listenToUserRecepies()
                     }
-                }.listStyle(.grouped)
-                    .navigationTitle("Inköpslista")
-
-
-                    List(recepies.userItems){ item in
+                    
+                    ForEach(recepies.userItems){ item in
                         if item.isBought{
                             HStack{
                                 Button(item.itemName, action: ({
@@ -57,18 +58,22 @@ struct ShoppingListView: View {
                                     }
                                     
                                 }))
+                                .strikethrough()
                                 Spacer()
                                 Image(systemName: "checkmark.square")
                                     .backgroundStyle(.white)
+                                  
                             }
                         }
-                    }.listStyle(.grouped)
-                    .strikethrough()
+                    } .foregroundColor(.green)
+                  
+                    
+                }.listStyle(.inset)
+                    .navigationTitle("Inköpslista")
+                   
+            }
+            }
 
-            }.onAppear{
-                recepies.listenToUserRecepies()
-            }
-            }
         }
         
     }
