@@ -44,21 +44,23 @@ struct ShoppingListView: View {
                                     
                                 }
                             }
-                        }.onDelete() {indexSet in
-                            for index in indexSet{
-                                guard let user = Auth.auth().currentUser else {return}
+                        }.onDelete { indexSet in
+                            guard let user = Auth.auth().currentUser else { return }
+                            for index in indexSet {
                                 let item = recepies.userItems[index]
                                 if let id = item.id {
                                     db.collection("users").document(user.uid)
-                                        .collection("userItems").document(id).delete()
+                                        .collection("userItems").document(id).delete { error in
+                                            if let error = error {
+                                                print("Error deleting document: \(error)")
+                                            } else {
+                                                if recepies.userItems.isEmpty {
+                                                    deleteAllItems()
+                                                }
+                                            }
+                                        }
                                 }
                             }
-                            if (recepies.userItems.isEmpty){
-                                for recepieID in recepies.addedRecepieID {
-                                    db.collection("users").document(currentUser!.uid).collection("addedRecepieID").document(recepieID).delete()
-                                }
-                            }
-                            
                         }
                         
                         ForEach(recepies.userItems){ item in
@@ -73,28 +75,28 @@ struct ShoppingListView: View {
                                                 "isBought" : !item.isBought
                                             ])
                                         }
-                                        
                                     }))
                                     .strikethrough()
                                     Spacer()
-                                  
                                         .backgroundStyle(.white)
-                                    
                                 }
                             }
                         }
-                        .onDelete() {indexSet in
-                            guard let user = Auth.auth().currentUser else {return}
-                            for index in indexSet{
+                        .onDelete { indexSet in
+                            guard let user = Auth.auth().currentUser else { return }
+                            for index in indexSet {
                                 let item = recepies.userItems[index]
                                 if let id = item.id {
                                     db.collection("users").document(user.uid)
-                                        .collection("userItems").document(id).delete()
-                                }
-                            }
-                            if (recepies.userItems.isEmpty){
-                                for recepieID in recepies.addedRecepieID {
-                                    db.collection("users").document(currentUser!.uid).collection("addedRecepieID").document(recepieID).delete()
+                                        .collection("userItems").document(id).delete { error in
+                                            if let error = error {
+                                                print("Error deleting document: \(error)")
+                                            } else {
+                                                if recepies.userItems.isEmpty {
+                                                    deleteAllItems()
+                                                }
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -140,7 +142,7 @@ struct ShoppingListView: View {
                                     .resizable()
                                     .frame(width: 30, height: 30)
                                     .foregroundColor(.white)
-                                Text("Lägg till")
+                                Text("Lägg till  ")
                                     .foregroundColor(.white)
                                 }
                                 .buttonStyle(.bordered)
