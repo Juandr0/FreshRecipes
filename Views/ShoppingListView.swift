@@ -41,6 +41,21 @@ struct ShoppingListView: View {
                                         .backgroundStyle(.white)
                                 }
                             }
+                    }.onDelete() {indexSet in
+                        for index in indexSet{
+                            guard let user = Auth.auth().currentUser else {return}
+                            let item = recepies.userItems[index]
+                            if let id = item.id {
+                                db.collection("users").document(user.uid)
+                                    .collection("userItems").document(id).delete()
+                            }
+                        }
+                        if (recepies.userItems.isEmpty){
+                            for recepieID in recepies.addedRecepieID {
+                                db.collection("users").document(currentUser!.uid).collection("addedRecepieID").document(recepieID).delete()
+                            }
+                        }
+                        
                     }
                     
                     ForEach(recepies.userItems){ item in
@@ -62,7 +77,24 @@ struct ShoppingListView: View {
                                   
                             }
                         }
-                    } .foregroundColor(.green)
+                    }
+                    .onDelete() {indexSet in
+                        guard let user = Auth.auth().currentUser else {return}
+                        for index in indexSet{
+                            let item = recepies.userItems[index]
+                            if let id = item.id {
+                                db.collection("users").document(user.uid)
+                                    .collection("userItems").document(id).delete()
+                            }
+                        }
+                        if (recepies.userItems.isEmpty){
+                            for recepieID in recepies.addedRecepieID {
+                                db.collection("users").document(currentUser!.uid).collection("addedRecepieID").document(recepieID).delete()
+                            }
+                        }
+                    }
+                    .foregroundColor(.green)
+                       
                   
                     
                 }.listStyle(.inset)
@@ -74,12 +106,12 @@ struct ShoppingListView: View {
                         }
                        
                     })
+                
                    
             }
             }
 
         }
-        
     }
 
         

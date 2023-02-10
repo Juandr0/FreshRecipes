@@ -38,6 +38,7 @@ class RecepiesList : ObservableObject {
                     print ("error getting documents \(err)")
 
                 } else {
+                    
                     if !self.userItems.isEmpty {
                         self.userItems.removeAll()
                     }
