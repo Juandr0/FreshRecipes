@@ -145,18 +145,21 @@ struct RecepiesListView: View{
                                                     print("Item not found")
                                                 }
                                             }
-                                      
-                                          
+                                            print("DeleteLoop FB ITEMS Complete")
                                             
-                                        print("DeleteLoop FB ITEMS Complete")
+                                            if recepie.id != nil {
                                                 db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
                                                 isRecepieAddedToDb = false
-                                        print("recepie ID removed from DB")
+                                                print("recepie ID removed from DB")
+                                            } else {
+                                                print("Error: recepie.id is nil")
+                                            }
+                                            
+                                       
                                          
                                         }
                                   
                                      else {
-
                                            var docRef = db.collection("users").document(currentUser.uid)
                                             docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                 
