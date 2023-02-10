@@ -82,8 +82,14 @@ class RecepiesList : ObservableObject {
         db.collection("recepies").getDocuments() { (snapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
-            } else {
-                for document in snapshot!.documents {
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                print("snapshot is nil")
+                return
+            }
+                for document in snapshot.documents {
                     let result = Result {
                         try document.data(as: Recepie.self)
                     }
@@ -96,31 +102,42 @@ class RecepiesList : ObservableObject {
                     }
                     
                     }
-                }
+                
             }
         print("function FetchData finished")
         }
     
     
-    func listenToFirestore()  {
-        if let currentUser  {
-            db.collection("users").document(currentUser.uid).collection("addedRecepieID").addSnapshotListener{snapshot, err in
-                guard let snapshot = snapshot else {return}
-                if let err = err {
-                    print ("error getting documents \(err)")
-
-                } else {
-                    if !self.addedRecepieID.isEmpty {
-                        self.addedRecepieID.removeAll()
-                    }
-                    for document in snapshot.documents {
-                        self.addedRecepieID.append(document.documentID)
-                        }
-                    }
+    func listenToFirestore() {
+        guard let currentUser = currentUser else {
+            print("Current user is nil")
+            return
+        }
+        
+        db.collection("users").document(currentUser.uid).collection("addedRecepieID").addSnapshotListener { snapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                print("Snapshot is nil")
+                return
+            }
+            
+            if !self.addedRecepieID.isEmpty {
+                self.addedRecepieID.removeAll()
+            }
+            
+            if !snapshot.isEmpty {
+                for document in snapshot.documents {
+                    self.addedRecepieID.append(document.documentID)
                 }
             }
-        print("function listenToFirestore finished")
         }
+        
+        print("Function listenToFirestore finished")
+    }
     
 
     }

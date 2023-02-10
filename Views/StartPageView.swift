@@ -9,8 +9,10 @@ import SwiftUI
 import Firebase
 
 struct StartPageView: View {
+  
     @StateObject var recepies = RecepiesList()
     let db = Firestore.firestore()
+ 
     
     var body: some View {
         
