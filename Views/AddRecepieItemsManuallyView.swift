@@ -38,7 +38,6 @@ struct AddRecepieItemsManuallyView: View {
                                        "isBought" : false ])
                             }
                         }
-
                         userInput = ""
                         dismiss()
 

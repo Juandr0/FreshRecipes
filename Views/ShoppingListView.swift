@@ -102,29 +102,35 @@ struct ShoppingListView: View {
                 
                     .listStyle(.inset)
                         .navigationBarTitle("Inköpslista")
-                        .navigationBarItems(trailing: NavigationLink(destination: AddRecepieItemsManuallyView()) {
-                            HStack {
-                                Text("Lägg till")
-                                Image(systemName: "plus.circle")
-                            }
-                            
-                        })
-          
-                        NavigationLink(destination: AddRecepieItemsManuallyView()){
-                            HStack{
-                                Spacer()
+//                        .navigationBarItems(trailing: self.test {
+//                            HStack {
+//                                Image(systemName: "trash")
+//                                    .foregroundColor(.red)
+//                            }
+//                        })
+                    
+                    
+                        HStack{
+                            Spacer()
+                            NavigationLink(destination: AddRecepieItemsManuallyView()){
+                         
                                 Image(systemName: "plus.circle")
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                     .foregroundColor(.green)
+                                
                                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
                             }
-                        }     
+                        }
                     } //VStack end
                 } //ZStack end
             }
 
         }
+    func test() {
+        print("test)")
+        
+    }
     }
 
         
