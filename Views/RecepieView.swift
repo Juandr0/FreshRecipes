@@ -77,8 +77,6 @@ struct RecepiesListView: View{
     @State var isRecepieAddedToDb = false
     @State var searchQuery = ""
     
-    @State var isFBdeleteLoopComplete = false
-    
     let currentUser = Auth.auth().currentUser
     let db : Firestore
     let recepie : Recepie
@@ -134,28 +132,26 @@ struct RecepiesListView: View{
 //                                         }
                                           
                                             //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
-                                            for recepieIngredient in recepie.ingredients {
-                                                if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
-                                                    docRef.document(recepies.userItems[index].id!).delete()
+                                            //Note: Samma fel.
+
+                                                for recepieIngredient in recepie.ingredients {
+                                                    if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
+                                                        docRef.document(recepies.userItems[index].id!).delete()
+                                                    } else {
+                                                        print("fel i rad 135-138")
+                                                        return
+
+                                                    }
                                                 }
-                                            }
+                                      
+                                          
                                             
-                                            isFBdeleteLoopComplete = true
                                         print("DeleteLoop FB ITEMS Complete")
                                     
-                                            if isFBdeleteLoopComplete {
+
                                                 db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
                                                 isRecepieAddedToDb = false
-                                                
-                                                
-                                                if let index = recepies.addedRecepieID.firstIndex(of: recepie.id!) {
-                                                    recepies.addedRecepieID.remove(at: index)
-                                                }
-                                                print("DeleteLoop addedRecepieID DOCUMENT Complete")
-                                                
-                                                //reset
-                                                isFBdeleteLoopComplete = false
-                                            }
+                                        print("recepie ID removed from DB")
                                          
                                         }
                                   
