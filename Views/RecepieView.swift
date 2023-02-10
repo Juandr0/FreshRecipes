@@ -134,21 +134,21 @@ struct RecepiesListView: View{
                                             //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
                                             //Note: Samma fel.
 
-                                                for recepieIngredient in recepie.ingredients {
-                                                    if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
+                                            for recepieIngredient in recepie.ingredients {
+                                                if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
+                                                    if index >= 0 && index < recepies.userItems.count {
                                                         docRef.document(recepies.userItems[index].id!).delete()
                                                     } else {
-                                                        print("fel i rad 135-138")
-                                                        return
-
+                                                        print("Index out of range")
                                                     }
+                                                } else {
+                                                    print("Item not found")
                                                 }
+                                            }
                                       
                                           
                                             
                                         print("DeleteLoop FB ITEMS Complete")
-                                    
-
                                                 db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
                                                 isRecepieAddedToDb = false
                                         print("recepie ID removed from DB")
