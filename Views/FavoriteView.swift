@@ -24,7 +24,6 @@ struct FavoriteView: View {
         NavigationView {
             VStack {
                 List() {
-                    
                     ForEach(recepies.allRecepies) {recepie in
                             let recepieID = recepie.id
                             if recepies.favoriteItems.contains(recepieID ?? "0"){
@@ -33,12 +32,11 @@ struct FavoriteView: View {
                                 }
                             }
                     }
-                    .navigationTitle("Favoriter")
-                    .padding(.bottom, 15)
+                    .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
                 }
                 .listStyle(.plain)
             }
-            
+            .navigationTitle("Favoriter")
         }
     }
 }
