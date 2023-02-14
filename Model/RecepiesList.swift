@@ -17,6 +17,7 @@ class RecepiesList : ObservableObject {
     @Published var addedRecepieID = [String]()
     @Published var userItems = [Item]()
     @Published var boughtItems = [Item]()
+    @Published var favoriteItems = [String]()
     
     
     var db = Firestore.firestore()
@@ -26,7 +27,8 @@ class RecepiesList : ObservableObject {
     init () {
         FetchData()
         listenToFirestore()
-        listenToUserRecepies() 
+        listenToUserRecepies()
+        listenToUserFavorites()
     }
     
  
@@ -138,6 +140,40 @@ class RecepiesList : ObservableObject {
         }
         
         print("Function listenToFirestore finished")
+    }
+    
+    
+    
+    
+    func listenToUserFavorites() {
+        guard let currentUser = currentUser else {
+            print("Current user is nil")
+            return
+        }
+        
+        db.collection("users").document(currentUser.uid).collection("favorites").addSnapshotListener { snapshot, error in
+            if let error = error {
+                print("Error getting favorites: \(error)")
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                print("Snapshot is nil")
+                return
+            }
+            
+            if !self.favoriteItems.isEmpty {
+                self.favoriteItems.removeAll()
+            }
+            
+            if !snapshot.isEmpty {
+                for document in snapshot.documents {
+                    self.favoriteItems.append(document.documentID)
+                }
+            }
+        }
+        
+        print("Function listenToFavoritesList finished")
     }
     
 

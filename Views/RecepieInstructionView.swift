@@ -7,11 +7,17 @@
 
 import Foundation
 import SwiftUI
+import Firebase
+import FirebaseAuth
 
 struct RecepieInstructionView: View {
+    @ObservedObject var recepies : RecepiesList
     let currentRecepie : Recepie
     @State var isCollapsed = true
     @State var isRecepieFavouriteMarked = false
+    
+    let db = Firestore.firestore()
+    let currentUser = Auth.auth().currentUser
     
     var body : some View {
      
@@ -39,17 +45,30 @@ struct RecepieInstructionView: View {
                     HStack{
                         Spacer()
                         Button(action: {
-                            isRecepieFavouriteMarked = !isRecepieFavouriteMarked
-                        }) {
                             
+                            if let currentUser {
+                                isRecepieFavouriteMarked = !isRecepieFavouriteMarked
+                                let docRef = db.collection("users").document(currentUser.uid).collection("favorites").document(currentRecepie.id!)
+
+                                if isRecepieFavouriteMarked {
+                                    docRef.setData([:])
+                                    isRecepieFavouriteMarked = true
+                                } else {
+                                    docRef.delete()
+                                    isRecepieFavouriteMarked = false
+                                    recepies.favoriteItems.removeAll(where: {$0 == currentRecepie.id})
+                                }
+                            }
+                        }) {
                             Image(systemName: isRecepieFavouriteMarked ? "heart.fill" : "heart")
                                 .resizable()
                                 .frame(width: 40, height: 40, alignment: .topTrailing)
                                 .foregroundColor(.red)
                                 .padding(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
                         }
-                       
                         .contentShape(Rectangle())
+                    }.onAppear{
+                        checkForFavorite()
                     }
                     Spacer()
                 }
@@ -104,7 +123,14 @@ struct RecepieInstructionView: View {
        
     }
     
-    
+    func checkForFavorite() {
+        if let currentUser {
+            let recepieID = currentRecepie.id
+            if recepies.favoriteItems.contains(recepieID ?? "0"){
+                isRecepieFavouriteMarked = true
+            }
+        }
+    }
 
     
 }
