@@ -15,7 +15,7 @@ struct RecepieInstructionView: View {
     let currentRecepie : Recepie
     @State var isCollapsed = true
     @State var isRecepieFavouriteMarked = false
-    
+
     let db = Firestore.firestore()
     let currentUser = Auth.auth().currentUser
     
@@ -24,8 +24,10 @@ struct RecepieInstructionView: View {
         VStack {
             HStack {
                 Text("\(currentRecepie.name)")
-                    .font(.title)
+                    .font(.title3)
                     .padding(.leading, 20)
+                    
+
                 Spacer()
             }
                 
@@ -64,7 +66,7 @@ struct RecepieInstructionView: View {
                                 .resizable()
                                 .frame(width: 40, height: 40, alignment: .topTrailing)
                                 .foregroundColor(.red)
-                                .padding(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
+                                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
                         }
                         .contentShape(Rectangle())
                     }.onAppear{
