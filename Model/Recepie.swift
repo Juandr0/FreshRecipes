@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Recepie : Codable, Identifiable{
+struct Recepie : Codable, Identifiable, Hashable{
     
     @DocumentID var id            : String?
     var name                      : String
@@ -18,11 +18,11 @@ struct Recepie : Codable, Identifiable{
     var allergenics               : [String]
     var instructions              : [String]
     var cookingtimeMinutes        : Int
-    var isAdded                   : Bool  //Ska tas bort
     var imageUrl                  : String
     
     
-   
+    
+
     
 //    func FetchAllergenics () {
 //
