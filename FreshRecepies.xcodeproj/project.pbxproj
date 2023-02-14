@@ -26,6 +26,7 @@
 		11DBAC06297F0A9000D84B22 /* StartPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC05297F0A9000D84B22 /* StartPageView.swift */; };
 		11DBAC09297F161100D84B22 /* RecepieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC08297F161100D84B22 /* RecepieView.swift */; };
 		11DBAC0B297FC8A100D84B22 /* ShoppingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */; };
+		11F53D6329970278001712ED /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F53D6229970278001712ED /* FavoriteView.swift */; };
 		11FA2C5129910E690000881F /* RecepieInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FA2C5029910E690000881F /* RecepieInstructionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		11DBAC05297F0A9000D84B22 /* StartPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPageView.swift; sourceTree = "<group>"; };
 		11DBAC08297F161100D84B22 /* RecepieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecepieView.swift; sourceTree = "<group>"; };
 		11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListView.swift; sourceTree = "<group>"; };
+		11F53D6229970278001712ED /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
 		11FA2C5029910E690000881F /* RecepieInstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecepieInstructionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +105,7 @@
 				114A9C1929891952006C6320 /* RecepiesList.swift */,
 				114A9C1529890FCE006C6320 /* Recepie.swift */,
 				118588142992856E00B831B2 /* Item.swift */,
+				114A9C1729891465006C6320 /* TempRecepieSaver.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -170,9 +173,9 @@
 			children = (
 				11DBAC05297F0A9000D84B22 /* StartPageView.swift */,
 				11DBAC08297F161100D84B22 /* RecepieView.swift */,
+				11F53D6229970278001712ED /* FavoriteView.swift */,
 				11DBAC0A297FC8A100D84B22 /* ShoppingListView.swift */,
 				11FA2C5029910E690000881F /* RecepieInstructionView.swift */,
-				114A9C1729891465006C6320 /* TempRecepieSaver.swift */,
 				119411CE2995487B00D0A9D7 /* AddRecepieItemsManuallyView.swift */,
 			);
 			path = Views;
@@ -323,6 +326,7 @@
 				118588152992856E00B831B2 /* Item.swift in Sources */,
 				11FA2C5129910E690000881F /* RecepieInstructionView.swift in Sources */,
 				11DBAC06297F0A9000D84B22 /* StartPageView.swift in Sources */,
+				11F53D6329970278001712ED /* FavoriteView.swift in Sources */,
 				114A9C1A29891952006C6320 /* RecepiesList.swift in Sources */,
 				11D7A9FB297F046E00FDC720 /* FreshRecepiesApp.swift in Sources */,
 				114A9C1829891465006C6320 /* TempRecepieSaver.swift in Sources */,

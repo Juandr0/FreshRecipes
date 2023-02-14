@@ -22,16 +22,23 @@ struct StartPageView: View {
                     Image(systemName: "fork.knife")
                     Text("Recepies")
                 }
-    
-            VStack {
-                ShoppingListView(recepies : recepies)
-            }
-                    .tabItem{
-                        Image(systemName: "list.clipboard")
-                        Text("Shopping list")
-                  
-            }
+              
+
+            ShoppingListView(recepies : recepies)
+                .tabItem{
+                    Image(systemName: "list.clipboard")
+                    Text("Shopping list")
+                }
+               
+            
+            FavoriteView(recepies : recepies)
+                .tabItem{
+                    Image(systemName: "heart")
+                    Text("Favorites")
+                }
+                
         }
+        
         
         
         

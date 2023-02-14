@@ -152,16 +152,97 @@ import Foundation
 //
 
 
+//name: "Soppa på gröna ärtor med baguette",
+//portions: 4,
+//ingredients: ["4 minibaguetter evt. glutenfria",
+//              "1 bakpotatis",
+//              "2 grönsaksbuljongtärningar",
+//              "450 g frysna gröna ärtor",
+//              "2 dl créme fraiche",
+//              "1 gurka",
+//              "1 förp färskost med vitlök"
+//             ],
 //
-//db.collection("recepies").document().setData( [
-//    "name" : nyttRecept.name,
-//    "portions" : nyttRecept.portions,
-//    "ingredients" : nyttRecept.ingredients,
-//    "allergenics" : nyttRecept.allergenics,
-//    "instructions" : nyttRecept.instructions,
-//    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
-//    "isAdded" : nyttRecept.isAdded,
-//    "imageUrl" : nyttRecept.imageUrl
 //
-//]
+//
+//allergenics: ["laktos, mjölkprotein"],
+//
+//instructions: ["1. Sätt på ugnen och grädda baguetterna enligt anvisningen på                     förpackningen.",
+//               "2. Skala och skär potatisen i tärningar. Koka den mjuk i 7 dl vatten tillsammans med smulade buljongtärningar.",
+//               "3.Tillsätt ärtor och crème fraiche och låt koka upp. Mixa soppan slät och smaka av med salt och peppar.",
+//               "4. Skiva gurkan, servera soppan med baguetter, färskost och gurka",
+//              ],
+//
+//cookingtimeMinutes: 20,
+//imageUrl: "https://firebasestorage.googleapis.com/v0/b/fresh-recepies.appspot.com/o/rsz_1soppa_pa_grona_artor.jpg?alt=media&token=f3670c20-b49c-4fa1-bdfa-4f9305eb033b"
 //)
+
+
+//    .onAppear{
+//        let nyttRecept = Recepie(
+//                        name: "Tacogratäng med nachos",
+//                        portions: 4,
+//                        ingredients: ["4 portioner ris",
+//                                      "500 g blandfärs",
+//                                      "1 förp tacokrydda",
+//                                      "1 burk med majs",
+//                                      "3 ägg",
+//                                      "1dl matlagningsgrädde",
+//                                      "1 förp tacosås medium",
+//                                      "12 nachochips",
+//                                      "1 kruka krispsallad"
+//                                     ],
+//        
+//        
+//        
+//                        allergenics: ["ägg, laktos, mjölklprotein"],
+//        
+//                        instructions: ["1. Sätt ugnen på 225 grader.",
+//                                       "2. Koka riset enligt anvisningen på förpackningen.",
+//                                       "3. Stek färsen i oljan och krydda med tacokrydda.",
+//                                       "4. Blanda ner majsen med spadet i färsen.",
+//                                       "5. Vispa upp äggen och blanda med grädde och tacosås. Krydda med salt och peppar.",
+//                                       "6. Vänd ner färsen i äggblandnigen och häll upp i en ugnsform (ca 20 x 30 cm). Krossa chipsen och strö över. Sätt in mitt i ugnen ca 15 minuter."],
+//        
+//                        cookingtimeMinutes: 25,
+//                        imageUrl: "https://firebasestorage.googleapis.com/v0/b/fresh-recepies.appspot.com/o/rsz_tacogratang_med_nachos.jpg?alt=media&token=a085ab1f-03b8-4e20-a275-eb8dc0c32835"
+//                        )
+//        
+//          name: "Mac'n cheese",
+//portions: 4,
+//ingredients: ["7 dl makaroner, evt. glutenfria",
+//              "2 förp tärnat bacon (á 140g)",
+//              "4 dl ostsås, valfri smak",
+//              "1 dl mjölk",
+//              "1 1/2 dl riven lagrad ost"],
+//
+//
+//
+//allergenics: ["Laktos, mjölkprotein, ägg (pastan)"],
+//
+//instructions: ["1. Sätt ugnen på 225°C",
+//               "2. Koka makaronerna enligt anvisningen på förpackningen.",
+//               "3  Stek baconet i en torr stekpanna.",
+//               "4. Blanda varma makaroner, ostsås, mjölk, bacon och riven ost i en ugnsform, storlek 20x30 cm (för 4 port), och sätt in högt upp ugnen ca 10 minuter.",
+//               "5. Skala och riv morötterna.",
+//               "6. Servera mac´n cheese med morötter. Toppa gärna med nymald svartpeppar."
+//              ],
+//
+//cookingtimeMinutes: 35,
+//imageUrl: "https://firebasestorage.googleapis.com/v0/b/fresh-recepies.appspot.com/o/rsz_1enkel_mac%C2%B4n_cheese.jpg?alt=media&token=26487f2e-b785-40e6-9ea7-b5d93695379f"
+//)
+//
+//
+//        
+//        db.collection("recepies").document().setData( [
+//            "name" : nyttRecept.name,
+//            "portions" : nyttRecept.portions,
+//            "ingredients" : nyttRecept.ingredients,
+//            "allergenics" : nyttRecept.allergenics,
+//            "instructions" : nyttRecept.instructions,
+//            "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
+//            "imageUrl" : nyttRecept.imageUrl
+//        
+//        ]
+//        )
+//    }
