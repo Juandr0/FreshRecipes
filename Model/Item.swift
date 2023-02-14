@@ -12,6 +12,6 @@ struct Item : Identifiable, Codable {
     
     @DocumentID var id : String?
     var itemName : String
-    var itemQuantity : Int?
+    var itemQuantity : Double?
     var isBought = false
 }
