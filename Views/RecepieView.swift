@@ -34,7 +34,7 @@ struct RecepieView: View {
         NavigationView {
             VStack{
                 HStack {
-                    Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här igen för att gömma dina filter")
+                    Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här för att gömma dina filter")
                         .onTapGesture {
                             self.isFilterViewCollapsed.toggle()
                         }
@@ -70,7 +70,7 @@ struct RecepieView: View {
                             Spacer()
                         }
                         if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Klicka på tumme ner för att exkludera ord från din sökning")
+                            Text("Klicka på tumme ner för att exkludera ingredienser eller hela maträtter från din sökning")
                                 .foregroundColor(.gray)
                         }
                         List(){
@@ -96,7 +96,7 @@ struct RecepieView: View {
                                     }
                                 }
                             }
-                        }.listStyle(.insetGrouped)
+                        }.listStyle(.inset)
                             .listRowBackground(Color.accentColor)
               
                             Spacer()
