@@ -19,26 +19,113 @@ extension String {
 struct RecepieView: View {
     let db = Firestore.firestore()
     @ObservedObject var recepies : RecepiesList
-
+    
     @State var searchQuery = ""
+    @State var filterQuery = ""
     @State var signedIn = false
-
+    @State var excludeRecepie = false
+    
+    @State var isFilterViewCollapsed = true
+    @State var filterListExcluded = [String]()
     let currentUser = Auth.auth().currentUser
     
     
     var body: some View {
         NavigationView {
-            VStack {
+            VStack{
+                HStack {
+                    Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här igen för att gömma dina filter")
+                        .onTapGesture {
+                            self.isFilterViewCollapsed.toggle()
+                        }
+                    Image(systemName: "magnifyingglass" )
+                        .rotationEffect(.degrees(isFilterViewCollapsed ? 0 : 45))
+                        .animation(isFilterViewCollapsed ? .easeInOut(duration: 0.1)  : .default)
+                        .onTapGesture {
+                            self.isFilterViewCollapsed.toggle()
+                        }
+                    Spacer()
+                }.padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
+                if !isFilterViewCollapsed {
+                    VStack{
+                        HStack{
+                            TextField("Skriv ingrediens här", text: $filterQuery)
+                                .padding(.leading,20)
+  
+                            Spacer()
+                            Button(action: {
+                                if (filterQuery != "") {
+                                    filterListExcluded.append(filterQuery.lowercased())
+                                    filterQuery = ""
+                                }
+                            }){
+                                Image(systemName: "hand.thumbsdown.fill")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                                    .foregroundColor(.red)
+                                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                            }
+                          
+                     
+                            Spacer()
+                        }
+                        if (filterQuery != "" && filterListExcluded.isEmpty) {
+                            Text("Klicka på tumme ner för att exkludera ord från din sökning")
+                                .foregroundColor(.gray)
+                        }
+                        List(){
+                            if !filterListExcluded.isEmpty {
+                                ForEach(filterListExcluded, id: \.self) {ingredient in
+                                    HStack{
+                                       
+                                        Image(systemName: "hand.thumbsdown.fill")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundColor(.red)
+                                        Text(ingredient.prefix(1).capitalized + ingredient.dropFirst())
+                                        Spacer()
+                                        Button(action: {
+                                            filterListExcluded.removeAll(where: {$0 == ingredient})
+                                        }){
+                                            Image(systemName: "minus.circle")
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(.red)
+                                                
+                                        }
+                                    }
+                                }
+                            }
+                        }.listStyle(.insetGrouped)
+                            .listRowBackground(Color.accentColor)
+              
+                            Spacer()
+                    }.padding(.leading, 20)
+               
+   
+                }
+
+                
                 List() {
                     ForEach(recepies.allRecepies.filter {
-                        
                         //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
-                        self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+                            self.searchQuery.isEmpty ? true :
+                                $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
                     }, id: \.self) {recepie in
-                        NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                            
+                            //Recepies that contains filtered out words is removed here
+                        if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
+                            !filterListExcluded.contains(recepie.name.lowercased()))
+                        {
+                            
+                            //Displays the recepies
+                                NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
+                                    RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                                }
+                                .navigationTitle("Recept")
                         }
-                        .navigationTitle("Recept")
+                         
+                
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
