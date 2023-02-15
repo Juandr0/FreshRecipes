@@ -49,7 +49,7 @@ struct RecepieView: View {
                 if !isFilterViewCollapsed {
                     VStack{
                         HStack{
-                            TextField("Skriv ingrediens här", text: $filterQuery)
+                            TextField("Skriv här för att lägga till ett nytt filter", text: $filterQuery)
                                 .padding(.leading,20)
   
                             Spacer()
@@ -70,7 +70,7 @@ struct RecepieView: View {
                             Spacer()
                         }
                         if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Klicka på tumme ner för att exkludera ingredienser eller hela maträtter från din sökning")
+                            Text("Skriv in sökordet och klicka på tumme ner för att exkludera ingredienser eller hela maträtter från din sökning")
                                 .foregroundColor(.gray)
                         }
                         List(){
