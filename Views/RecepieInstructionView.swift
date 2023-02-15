@@ -85,7 +85,7 @@ struct RecepieInstructionView: View {
                     Image(systemName: "triangle.tophalf.filled" )
                         .foregroundColor(.red)
                         .rotationEffect(.degrees(isCollapsed ? 90 : 180))
-                        .animation(.default)
+                        .animation(isCollapsed ? .easeInOut(duration: 0.1)  : .default)
                         .onTapGesture {
                             self.isCollapsed.toggle()
                         }
