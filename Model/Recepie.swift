@@ -15,6 +15,7 @@ struct Recepie : Codable, Identifiable, Hashable{
     var name                      : String
     var portions                  : Int
     var ingredients               : [String]
+    var ingredientsQuantity       : [String]?
     var allergenics               : [String]
     var instructions              : [String]
     var cookingtimeMinutes        : Int

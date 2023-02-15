@@ -79,7 +79,11 @@ class RecepiesList : ObservableObject {
 //    }
 //
     
-    
+    func splitData() {
+        
+        
+        
+    }
     
     func FetchData() {
         db.collection("recepies").getDocuments() { (snapshot, err) in

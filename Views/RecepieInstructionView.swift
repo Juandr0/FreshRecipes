@@ -24,7 +24,7 @@ struct RecepieInstructionView: View {
         VStack {
             HStack {
                 Text("\(currentRecepie.name)")
-                    .font(.title3)
+                    .font(.title)
                     .padding(.leading, 20)
                     
 
@@ -66,41 +66,38 @@ struct RecepieInstructionView: View {
                                 .resizable()
                                 .frame(width: 40, height: 40, alignment: .topTrailing)
                                 .foregroundColor(.red)
-                                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 145, trailing: 0))
                         }
                         .contentShape(Rectangle())
                     }.onAppear{
                         checkForFavorite()
                     }
+                }
+            }
+            VStack{
+                HStack {
                     Spacer()
+                    Text("Allergiinformation")
+                        .foregroundColor(.red)
+                        .onTapGesture {
+                            self.isCollapsed.toggle()
+                        }
+                    Image(systemName: "triangle.tophalf.filled" )
+                        .foregroundColor(.red)
+                        .rotationEffect(.degrees(isCollapsed ? 90 : 180))
+                        .animation(.default)
+                        .onTapGesture {
+                            self.isCollapsed.toggle()
+                        }
+                    Spacer()
+                    HStack {
+                        Image(systemName: "clock")
+                        Text("\(currentRecepie.cookingtimeMinutes) min")
+                    } .padding(.trailing, 20)
                 }
             }
 
-            
-            HStack {
-             
-                Spacer()
-                Spacer()
-                Text("Allergiinformation")
-                    .foregroundColor(.red)
-                    .onTapGesture {
-                        self.isCollapsed.toggle()
-                    }
-                Image(systemName: "triangle.tophalf.filled" )
-                    .foregroundColor(.red)
-                    .rotationEffect(.degrees(isCollapsed ? 90 : 180))
-                    .animation(.default)
-                    .onTapGesture {
-                        self.isCollapsed.toggle()
-                    }
-                Spacer()
-                
-                HStack {
-                    Image(systemName: "clock")
-                    Text("\(currentRecepie.cookingtimeMinutes) min")
-                } .padding(.trailing, 20)
-            }
-            
+    
             if !isCollapsed {
                 ForEach (currentRecepie.allergenics, id: \.self) { text in
                     HStack{
@@ -111,18 +108,9 @@ struct RecepieInstructionView: View {
                 }
             }
         }
-        
-    
-   
-      
-            
-        Section() {
             List (currentRecepie.instructions, id: \.self) {text in
                 Text(text)
             }.listStyle(.plain)
-            Spacer()
-        }
-       
     }
     
     func checkForFavorite() {
