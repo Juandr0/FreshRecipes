@@ -19,16 +19,134 @@ extension String {
 struct RecepieView: View {
     let db = Firestore.firestore()
     @ObservedObject var recepies : RecepiesList
-
+    
     @State var searchQuery = ""
+    @State var filterQuery = ""
     @State var signedIn = false
-
+    
+    @State var isFilterViewCollapsed = true
+    @State var filterListIncluded = [String]()
+    @State var filterListExcluded = [String]()
     let currentUser = Auth.auth().currentUser
     
     
     var body: some View {
         NavigationView {
-            VStack {
+            VStack{
+                HStack {
+                    Text("Klicka här för att filtrera din sökning")
+                        .onTapGesture {
+                            self.isFilterViewCollapsed.toggle()
+                        }
+                    Image(systemName: "magnifyingglass" )
+                        .rotationEffect(.degrees(isFilterViewCollapsed ? 0 : 45))
+                        .animation(isFilterViewCollapsed ? .easeInOut(duration: 0.1)  : .default)
+                        .onTapGesture {
+                            self.isFilterViewCollapsed.toggle()
+                        }
+                    Spacer()
+                }.padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
+                if !isFilterViewCollapsed {
+                    VStack{
+                        HStack{
+                            TextField("Filtrera sökning", text: $filterQuery)
+                                .padding(.leading,20)
+  
+                            Spacer()
+                            Button(action: {
+                                if (filterQuery != "") {
+                                    filterListIncluded.append(filterQuery)
+                                    filterQuery = ""
+                                }
+                            }){
+                             
+                                VStack{
+                                    Image(systemName: "hand.thumbsup.fill")
+                                        .resizable()
+                                        .foregroundColor(.green)
+                                        .frame(width: 25, height: 25)
+                                        .padding(.trailing, 10)
+                                }
+                              
+                            }
+                            
+                            Button(action: {
+                                if (filterQuery != "") {
+                                    filterListExcluded.append(filterQuery)
+                                    filterQuery = ""
+                                }
+                            }){
+                                Image(systemName: "hand.thumbsdown.fill")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                                    .foregroundColor(.red)
+                                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                            }
+                          
+                     
+                            Spacer()
+                        }
+                        if (filterQuery != "" && filterListExcluded.isEmpty && filterListIncluded.isEmpty) {
+                            Text("Klicka på tumme upp för att inkludera eller tumme ner för att exkludera ordet från din sökning")
+                                .foregroundColor(.gray)
+                        }
+                        List(){
+                            if !filterListIncluded.isEmpty {
+                                ForEach(filterListIncluded, id: \.self) {ingredient in
+                                    HStack{
+                                       
+                                        Image(systemName: "hand.thumbsup.fill")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundColor(.green)
+                                        Text(ingredient)
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            filterListIncluded.removeAll(where: {$0 == ingredient})
+                                        }){
+                                            Image(systemName: "minus.circle")
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(.red)
+                                                
+                                        }
+                                    }
+                                }
+                            }
+                        
+                            if !filterListExcluded.isEmpty {
+                                ForEach(filterListExcluded, id: \.self) {ingredient in
+                                    HStack{
+                                       
+                                        Image(systemName: "hand.thumbsdown.fill")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundColor(.red)
+                                        Text(ingredient)
+                                        Spacer()
+                                        Button(action: {
+                                            filterListExcluded.removeAll(where: {$0 == ingredient})
+                                        }){
+                                            Image(systemName: "minus.circle")
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(.red)
+                                                
+                                        }
+                                    }
+                                }
+                            }
+                        }.listStyle(.insetGrouped)
+                            .listRowBackground(Color.accentColor)
+              
+                            Spacer()
+                    }.padding(.leading, 20)
+               
+   
+                }
+
+                
                 List() {
                     ForEach(recepies.allRecepies.filter {
                         
