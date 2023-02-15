@@ -23,9 +23,9 @@ struct RecepieView: View {
     @State var searchQuery = ""
     @State var filterQuery = ""
     @State var signedIn = false
+    @State var excludeRecepie = false
     
     @State var isFilterViewCollapsed = true
-    @State var filterListIncluded = [String]()
     @State var filterListExcluded = [String]()
     let currentUser = Auth.auth().currentUser
     
@@ -34,7 +34,7 @@ struct RecepieView: View {
         NavigationView {
             VStack{
                 HStack {
-                    Text("Klicka här för att filtrera din sökning")
+                    Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här igen för att gömma dina filter")
                         .onTapGesture {
                             self.isFilterViewCollapsed.toggle()
                         }
@@ -49,30 +49,13 @@ struct RecepieView: View {
                 if !isFilterViewCollapsed {
                     VStack{
                         HStack{
-                            TextField("Filtrera sökning", text: $filterQuery)
+                            TextField("Skriv ingrediens här", text: $filterQuery)
                                 .padding(.leading,20)
   
                             Spacer()
                             Button(action: {
                                 if (filterQuery != "") {
-                                    filterListIncluded.append(filterQuery)
-                                    filterQuery = ""
-                                }
-                            }){
-                             
-                                VStack{
-                                    Image(systemName: "hand.thumbsup.fill")
-                                        .resizable()
-                                        .foregroundColor(.green)
-                                        .frame(width: 25, height: 25)
-                                        .padding(.trailing, 10)
-                                }
-                              
-                            }
-                            
-                            Button(action: {
-                                if (filterQuery != "") {
-                                    filterListExcluded.append(filterQuery)
+                                    filterListExcluded.append(filterQuery.lowercased())
                                     filterQuery = ""
                                 }
                             }){
@@ -86,35 +69,11 @@ struct RecepieView: View {
                      
                             Spacer()
                         }
-                        if (filterQuery != "" && filterListExcluded.isEmpty && filterListIncluded.isEmpty) {
-                            Text("Klicka på tumme upp för att inkludera eller tumme ner för att exkludera ordet från din sökning")
+                        if (filterQuery != "" && filterListExcluded.isEmpty) {
+                            Text("Klicka på tumme ner för att exkludera ord från din sökning")
                                 .foregroundColor(.gray)
                         }
                         List(){
-                            if !filterListIncluded.isEmpty {
-                                ForEach(filterListIncluded, id: \.self) {ingredient in
-                                    HStack{
-                                       
-                                        Image(systemName: "hand.thumbsup.fill")
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .foregroundColor(.green)
-                                        Text(ingredient)
-                                        Spacer()
-                                        
-                                        Button(action: {
-                                            filterListIncluded.removeAll(where: {$0 == ingredient})
-                                        }){
-                                            Image(systemName: "minus.circle")
-                                                .resizable()
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(.red)
-                                                
-                                        }
-                                    }
-                                }
-                            }
-                        
                             if !filterListExcluded.isEmpty {
                                 ForEach(filterListExcluded, id: \.self) {ingredient in
                                     HStack{
@@ -123,7 +82,7 @@ struct RecepieView: View {
                                             .resizable()
                                             .frame(width: 15, height: 15)
                                             .foregroundColor(.red)
-                                        Text(ingredient)
+                                        Text(ingredient.prefix(1).capitalized + ingredient.dropFirst())
                                         Spacer()
                                         Button(action: {
                                             filterListExcluded.removeAll(where: {$0 == ingredient})
@@ -149,14 +108,24 @@ struct RecepieView: View {
                 
                 List() {
                     ForEach(recepies.allRecepies.filter {
-                        
                         //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
-                        self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+                            self.searchQuery.isEmpty ? true :
+                                $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
                     }, id: \.self) {recepie in
-                        NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                            
+                            //Recepies that contains filtered out words is removed here
+                        if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
+                            !filterListExcluded.contains(recepie.name.lowercased()))
+                        {
+                            
+                            //Displays the recepies
+                                NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
+                                    RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                                }
+                                .navigationTitle("Recept")
                         }
-                        .navigationTitle("Recept")
+                         
+                
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
