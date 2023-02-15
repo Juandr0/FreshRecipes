@@ -77,7 +77,6 @@ struct RecepieInstructionView: View {
             VStack{
                 HStack {
                     Spacer()
-                    Spacer()
                     Text("Allergiinformation")
                         .foregroundColor(.red)
                         .onTapGesture {
@@ -90,7 +89,7 @@ struct RecepieInstructionView: View {
                         .onTapGesture {
                             self.isCollapsed.toggle()
                         }
-                    
+                    Spacer()
                     HStack {
                         Image(systemName: "clock")
                         Text("\(currentRecepie.cookingtimeMinutes) min")
