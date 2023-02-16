@@ -54,7 +54,7 @@ struct ShoppingListView: View {
                                             if let error = error {
                                                 print("Error deleting document: \(error)")
                                             } else {
-                                                if recepies.userItems.isEmpty {
+                                                if recepies.userItems.isEmpty{
                                                     deleteAllItems()
                                                 }
                                             }
@@ -92,7 +92,7 @@ struct ShoppingListView: View {
                                             if let error = error {
                                                 print("Error deleting document: \(error)")
                                             } else {
-                                                if recepies.userItems.isEmpty {
+                                                if recepies.userItems.isEmpty{
                                                     deleteAllItems()
                                                 }
                                             }
@@ -101,10 +101,7 @@ struct ShoppingListView: View {
                             }
                         }
                         .listRowBackground(Color(red: 0.3, green: 0.3, blue: 0.3))
-                        
-                    
                     }//List end
-            
                     .listStyle(.inset)
                         .navigationBarTitle("Inköpslista")
                         .padding(.top, 20)
