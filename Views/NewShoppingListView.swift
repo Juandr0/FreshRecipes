@@ -20,7 +20,7 @@ struct NewShoppingListView: View {
     
     var body : some View {
         VStack{
-            ForEach(recepies.allRecepies) { recipe in
+            List(recepies.allRecepies) { recipe in
                 if let ingredients = recipe.ingredientsAsItem {
                     ForEach(ingredients) { item in
                         Text("\(item.itemName)")
@@ -28,9 +28,12 @@ struct NewShoppingListView: View {
                 }
             }
         }
+    }
+}
         
-     
-
+        
+//
+//
 //        NavigationView {
 //            ZStack{
 //                VStack {
@@ -163,34 +166,34 @@ struct NewShoppingListView: View {
 //                    }
 //                } //ZStack end
 //        }
-    }
-    
-    
-        func deleteAllItems(){
-            if let currentUser {
-                for recepieID in recepies.addedRecepieID {
-                    db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepieID).delete()
-                }
-                
-                for ingredientID in recepies.userItems {
-                    if let index = recepies.userItems.firstIndex(where: { $0.id == ingredientID.id }) {
-                        if index >= 0 && index < recepies.userItems.count {
-                            db.collection("users").document(currentUser.uid).collection("userItems").document(recepies.userItems[index].id!).delete()
-                        } else {
-                            print("Index out of range")
-                        }
-                    } else {
-                        print("Item not found")
-                    }
-                }
-                print("DeleteLoop FB ITEMS Complete")
-              
-            }
-        }
-    
-    
-}
-    
+//    }
+//
+//
+//        func deleteAllItems(){
+//            if let currentUser {
+//                for recepieID in recepies.addedRecepieID {
+//                    db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepieID).delete()
+//                }
+//
+//                for ingredientID in recepies.userItems {
+//                    if let index = recepies.userItems.firstIndex(where: { $0.id == ingredientID.id }) {
+//                        if index >= 0 && index < recepies.userItems.count {
+//                            db.collection("users").document(currentUser.uid).collection("userItems").document(recepies.userItems[index].id!).delete()
+//                        } else {
+//                            print("Index out of range")
+//                        }
+//                    } else {
+//                        print("Item not found")
+//                    }
+//                }
+//                print("DeleteLoop FB ITEMS Complete")
+//
+//            }
+//        }
+//
+//
+//}
+//
 
 
 //struct NewShoppingListView_Previews: PreviewProvider {
