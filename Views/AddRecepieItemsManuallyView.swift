@@ -13,8 +13,27 @@ import FirebaseAuth
 struct AddRecepieItemsManuallyView: View {
     @Environment(\.dismiss) var dismiss
     @State var userInput = ""
+    @State var inputQuantity = 0.0
+    @State var measurement = ""
+    
     var db = Firestore.firestore()
     var currentUser = Auth.auth().currentUser
+    
+    var measurementUnitsList = [  "-",
+                                  "g",
+                                  "hg",
+                                  "kg",
+                                  "ml",
+                                  "dl",
+                                  "liter",
+                                  "tsk",
+                                  "msk",
+                                  "st",
+                                  "förpackning",
+                                  "burk",
+                                  "portion",
+                                  "kruka"]
+    
     
     var body : some View {
    
@@ -22,9 +41,22 @@ struct AddRecepieItemsManuallyView: View {
         ZStack {
             VStack{
                 Spacer()
+                TextField("Lägg till ny artikel och välj antal nedan", text: $userInput)
+                    .multilineTextAlignment(.center)
                 HStack {
-                    TextField("Lägg till ny artikel", text: $userInput)
-                        .multilineTextAlignment(.center)
+                    Picker("Antal", selection: $inputQuantity)  {
+                        ForEach(0..<1000) { number in
+                            Text("\(number)")
+                        }
+                    }.pickerStyle(WheelPickerStyle())
+                    
+                    Picker("Mått", selection: $measurement)  {
+                        ForEach(measurementUnitsList, id: \.self) { unit in
+                            Text("\(unit)")
+                        }
+                    }.pickerStyle(WheelPickerStyle())
+   
+
                 }
                 Spacer()
             }
@@ -34,9 +66,14 @@ struct AddRecepieItemsManuallyView: View {
                     Button(action: {
                         if userInput != "" {
                             if let currentUser {
-                                db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [        "itemName" : userInput,
-                                       "isBought" : false ])
-                            }
+                            db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
+                                
+                                "itemName" : userInput,
+                                "isBought" : false,
+                                "itemMeasurement" : measurement,
+                                "itemQuantity" : inputQuantity.self
+                                                                                                                        
+                            ])}
                         }
                         userInput = ""
                         dismiss()

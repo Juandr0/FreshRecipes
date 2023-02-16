@@ -125,7 +125,6 @@ class RecepiesList : ObservableObject {
                             switch ingredientResult {
                             case .success(let newIngredient):
                                 newIngredientsAsItem.append(newIngredient)
-                                print("New ingredient fetched: \(newIngredient.itemName)")
                             case .failure(let err):
                                 print("IngredientResult fail: \(err)")
                             }

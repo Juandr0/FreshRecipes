@@ -233,8 +233,8 @@ struct RecepiesListView: View{
                                         //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
                                         //Note: Samma fel.
                                         
-                                        for recepieIngredient in recepie.ingredients {
-                                            if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
+                                        for recepieItem in recepie.ingredientsAsItem! {
+                                            if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieItem.itemName }) {
                                                 if index >= 0 && index < recepies.userItems.count {
                                                     docRef.document(recepies.userItems[index].id!).delete()
                                                 } else {
@@ -262,10 +262,16 @@ struct RecepiesListView: View{
                                         let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
-                                        for recepieIngredient in recepie.ingredients {
-                                            let newItem = Item(itemName: recepieIngredient)
+                                        for recepieItem in recepie.ingredientsAsItem! {
+                                            
+                                            var newItem = Item(itemName: recepieItem.itemName,
+                                                               itemQuantity: recepieItem.itemQuantity,
+                                                               itemMeasurement: recepieItem.itemMeasurement,
+                                                               isBought: false)
                                             docRef.collection("userItems").document().setData([
                                                 
+                                                "itemMeasurement" : newItem.itemMeasurement!,
+                                                "itemQuantity" : newItem.itemQuantity!,
                                                 "itemName" : newItem.itemName,
                                                 "isBought" : newItem.isBought
                                                 
