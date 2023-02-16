@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import Firebase
 import FirebaseAuth
 
@@ -58,9 +59,15 @@ struct LoadingScreen: View {
                 loadingText = loadingTextList.randomElement()!
                 listenForAuthChanges()
             }
+            .onDisappear{
+                rotationTimer.upstream.connect().cancel()
+                textTimer.upstream.connect().cancel()
+                loginTimer.upstream.connect().cancel()
+            }
             .onReceive(loginTimer) { _ in
                 retryLogin()
             }
+            
         }
       
     }
