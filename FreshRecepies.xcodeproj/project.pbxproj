@@ -54,7 +54,7 @@
 		114A9C1929891952006C6320 /* RecepiesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecepiesList.swift; sourceTree = "<group>"; };
 		118588142992856E00B831B2 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		119411CE2995487B00D0A9D7 /* AddRecepieItemsManuallyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecepieItemsManuallyView.swift; sourceTree = "<group>"; };
-		11D7A9F7297F046E00FDC720 /* FreshRecepies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreshRecepies.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		11D7A9F7297F046E00FDC720 /* FreshRecipes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreshRecipes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11D7A9FA297F046E00FDC720 /* FreshRecepiesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshRecepiesApp.swift; sourceTree = "<group>"; };
 		11D7A9FE297F047000FDC720 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11D7AA01297F047000FDC720 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 		11D7A9F8297F046E00FDC720 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				11D7A9F7297F046E00FDC720 /* FreshRecepies.app */,
+				11D7A9F7297F046E00FDC720 /* FreshRecipes.app */,
 				11D7AA07297F047000FDC720 /* FreshRecepiesTests.xctest */,
 				11D7AA11297F047000FDC720 /* FreshRecepiesUITests.xctest */,
 			);
@@ -204,7 +204,7 @@
 				114A9C102988F78A006C6320 /* FirebaseFunctions */,
 			);
 			productName = FreshRecepies;
-			productReference = 11D7A9F7297F046E00FDC720 /* FreshRecepies.app */;
+			productReference = 11D7A9F7297F046E00FDC720 /* FreshRecipes.app */;
 			productType = "com.apple.product-type.application";
 		};
 		11D7AA06297F047000FDC720 /* FreshRecepiesTests */ = {
@@ -503,7 +503,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = FreshRecepies.FreshRecepies;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FreshRecipes;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -531,7 +531,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = FreshRecepies.FreshRecepies;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FreshRecipes;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
