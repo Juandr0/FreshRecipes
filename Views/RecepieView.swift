@@ -217,7 +217,7 @@ struct RecepiesListView: View{
                                 let searchString = recepie.id
                                 if let currentUser {
                                     
-                                    var docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                    let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                     
                                     if recepies.addedRecepieID.contains(searchString!){
                                         
@@ -259,7 +259,7 @@ struct RecepiesListView: View{
                                     }
                                     
                                     else {
-                                        var docRef = db.collection("users").document(currentUser.uid)
+                                        let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
                                         for recepieIngredient in recepie.ingredients {

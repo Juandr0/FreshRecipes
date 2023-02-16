@@ -114,7 +114,7 @@ struct RecepieInstructionView: View {
     }
     
     func checkForFavorite() {
-        if let currentUser {
+        if currentUser != nil {
             let recepieID = currentRecepie.id
             if recepies.favoriteItems.contains(recepieID ?? "0"){
                 isRecepieFavouriteMarked = true

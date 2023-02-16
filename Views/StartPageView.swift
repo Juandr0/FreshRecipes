@@ -7,37 +7,50 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAuth
 
 struct StartPageView: View {
-  
+
     @StateObject var recepies = RecepiesList()
+    @State var isUserLoggedIn = false
+    
     let db = Firestore.firestore()
- 
+    let currentUser = Auth.auth().currentUser
+
+    
+    
+    
     
     var body: some View {
         
-        TabView {
-            RecepieView(recepies : recepies)
-                .tabItem {
-                    Image(systemName: "fork.knife")
-                    Text("Recepies")
-                }
-              
+        if isUserLoggedIn  {
+            TabView {
+                RecepieView(recepies : recepies)
+                    .tabItem {
+                        Image(systemName: "fork.knife")
+                        Text("Recepies")
+                    }
+                  
 
-            ShoppingListView(recepies : recepies)
-                .tabItem{
-                    Image(systemName: "list.clipboard")
-                    Text("Shopping list")
-                }
-               
-            
-            FavoriteView(recepies : recepies)
-                .tabItem{
-                    Image(systemName: "heart")
-                    Text("Favorites")
-                }
+                ShoppingListView(recepies : recepies)
+                    .tabItem{
+                        Image(systemName: "list.clipboard")
+                        Text("Shopping list")
+                    }
+                   
                 
+                FavoriteView(recepies : recepies)
+                    .tabItem{
+                        Image(systemName: "heart")
+                        Text("Favorites")
+                    }
+                    
+            }
         }
+        else {
+            LoadingScreen(isUserLoggedIn: $isUserLoggedIn)
+        }
+  
         
         
         
