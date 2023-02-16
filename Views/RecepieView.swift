@@ -257,7 +257,7 @@ struct RecepiesListView: View{
                                         
                                         
                                     }
-                                    
+                                    //Add items
                                     else {
                                         let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
@@ -265,13 +265,13 @@ struct RecepiesListView: View{
                                         for recepieItem in recepie.ingredientsAsItem! {
                                             
                                             var newItem = Item(itemName: recepieItem.itemName,
-                                                               itemQuantity: recepieItem.itemQuantity,
-                                                               itemMeasurement: recepieItem.itemMeasurement,
+                                                               itemQuantity: recepieItem.itemQuantity!,
+                                                               itemMeasurement: recepieItem.itemMeasurement!,
                                                                isBought: false)
                                             docRef.collection("userItems").document().setData([
                                                 
-                                                "itemMeasurement" : newItem.itemMeasurement!,
-                                                "itemQuantity" : newItem.itemQuantity!,
+                                                "itemMeasurement" : newItem.itemMeasurement,
+                                                "itemQuantity" : newItem.itemQuantity,
                                                 "itemName" : newItem.itemName,
                                                 "isBought" : newItem.isBought
                                                 

@@ -33,7 +33,8 @@ struct ShoppingListView: View {
                                     Image(systemName: "square")
                                         .backgroundStyle(.white)
                                         .padding(.trailing, 20)
-                                    Button(item.itemName, action: ({
+                                    
+                                    Button(action: ({
                                         if let currentUser {
                                             let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                             
@@ -42,8 +43,17 @@ struct ShoppingListView: View {
                                                 "isBought" : !item.isBought
                                             ])
                                         }
-                                    }))
-                                    Spacer()
+                                    })){
+                                        HStack{
+                                            Text(String(item.itemQuantity))
+                                            Text(item.itemMeasurement)
+                                            Spacer()
+                                            Text(item.itemName)
+                                        }
+                                      
+                                            
+                                    }
+                                   
                                     
                                 }
                             }
