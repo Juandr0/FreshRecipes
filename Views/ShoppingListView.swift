@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseFirestore
 import FirebaseCore
 import FirebaseAuth
 
@@ -35,6 +36,8 @@ struct ShoppingListView: View {
                                     Button(item.itemName, action: ({
                                         if let currentUser {
                                             let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                            
+                            
                                             docRef.document(item.id!).updateData([
                                                 "isBought" : !item.isBought
                                             ])
@@ -146,13 +149,13 @@ struct ShoppingListView: View {
                                 .background(Color.gray)
                                 .cornerRadius(15)
                                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 25, trailing: 25))
+                                
                  
                         }
                     }
                 } //ZStack end
-            }
-        
         }
+    }
     
         func deleteAllItems(){
             if let currentUser {

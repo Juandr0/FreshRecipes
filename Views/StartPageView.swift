@@ -44,7 +44,12 @@ struct StartPageView: View {
                         Image(systemName: "heart")
                         Text("Favorites")
                     }
-                    
+                
+                NewShoppingListView(recepies: recepies)
+                    .tabItem{
+                        Image(systemName: "list.clipboard")
+                        Text("Shopping list")
+                    }
             }
         }
         else {
