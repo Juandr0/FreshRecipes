@@ -35,7 +35,7 @@ struct AddRecepieItemsManuallyView: View {
                     .multilineTextAlignment(.center)
                 HStack {
                     ItemQuantityPicker(inputQuantity: $inputQuantity)
-                    MeasurementPicker(measurement: $measurement, userInput: $userInput, recepies : recepies)
+                    MeasurementPicker(measurement: $measurement)
                 }
                 Spacer()
             }
@@ -93,8 +93,6 @@ struct AddRecepieItemsManuallyView: View {
 
 struct MeasurementPicker : View  {
     @Binding var measurement : String
-    @Binding var userInput : String
-    @ObservedObject var recepies : RecepiesList
     let measurementUnitsList = [  "g",
                                   "hg",
                                   "kg",
