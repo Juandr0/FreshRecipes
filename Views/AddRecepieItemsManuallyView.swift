@@ -39,7 +39,6 @@ struct AddRecepieItemsManuallyView: View {
                 }
                 Spacer()
             }
-        
             VStack{
                 Spacer()
                 Button(action: {
@@ -57,7 +56,7 @@ struct AddRecepieItemsManuallyView: View {
                                 print("Finns redan, adderar kvantiteten istället")
 
                                 for recipe in recepies.userItems {
-                                    if recipe.itemName.lowercased() == userInput.lowercased()  {
+                                    if recipe.itemName.lowercased() == userInput.lowercased() {
                                         let newValue = inputQuantity + recipe.itemQuantity
                                         db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                             
@@ -99,19 +98,19 @@ struct MeasurementPicker : View  {
                                   "ml",
                                   "cl",
                                   "dl",
-                                  "liter",
+                                  "l",
                                   "tsk",
                                   "msk",
                                   "st",
-                                  "förpackning",
+                                  "förp",
                                   "burk",
-                                  "portion",
+                                  "port",
                                   "kruka"]
 
 
     var body : some View {
         VStack{
-            Picker("Mått", selection: $measurement)  {
+            Picker("Mått (gäller bara ej tillagda föremål)", selection: $measurement)  {
                 ForEach(measurementUnitsList, id: \.self) { unit in
                     Text("\(unit)")
                 }
