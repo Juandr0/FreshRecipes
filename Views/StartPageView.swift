@@ -44,7 +44,6 @@ struct StartPageView: View {
                         Image(systemName: "heart")
                         Text("Favorites")
                     }
-                    
             }
         }
         else {

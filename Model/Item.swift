@@ -8,10 +8,11 @@
 import Foundation
 import FirebaseFirestoreSwift
 
-struct Item : Identifiable, Codable {
+struct Item : Identifiable, Codable, Hashable{
     
     @DocumentID var id : String?
     var itemName : String
-    var itemQuantity : Double?
+    var itemQuantity : Double
+    var itemMeasurement : String
     var isBought = false
 }

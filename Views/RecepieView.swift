@@ -24,7 +24,7 @@ struct RecepieView: View {
     @State var filterQuery = ""
     @State var signedIn = false
     @State var excludeRecepie = false
-    
+
     @State var isFilterViewCollapsed = true
     @State var filterListExcluded = [String]()
     let currentUser = Auth.auth().currentUser
@@ -165,6 +165,8 @@ struct RecepiesListView: View{
     @State var isRecepieAddedToDb = false
     @State var isRecepieFavouriteMarked = false
     @State var searchQuery = ""
+    @State var doesItemExist = false
+    
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
@@ -233,10 +235,19 @@ struct RecepiesListView: View{
                                         //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
                                         //Note: Samma fel.
                                         
-                                        for recepieIngredient in recepie.ingredients {
-                                            if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
-                                                if index >= 0 && index < recepies.userItems.count {
-                                                    docRef.document(recepies.userItems[index].id!).delete()
+                                        for recipeItem in recepie.ingredientsAsItem! {
+                                            if let userIndex = recepies.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
+                                                if userIndex < recepies.userItems.count {
+                                                    let userItem = recepies.userItems[userIndex]
+                                                    if userItem.itemQuantity > recipeItem.itemQuantity! {
+                                                        let newValue = userItem.itemQuantity - recipeItem.itemQuantity!
+                                                        db.collection("users").document(currentUser.uid).collection("userItems").document(userItem.id!).updateData([
+                                                            "itemQuantity": newValue
+                                                        ])
+                                                        print("Det finns mer av \(recipeItem.itemName) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
+                                                    } else {
+                                                        docRef.document(userItem.id!).delete()
+                                                    }
                                                 } else {
                                                     print("Index out of range")
                                                 }
@@ -244,6 +255,7 @@ struct RecepiesListView: View{
                                                 print("Item not found")
                                             }
                                         }
+
                                         print("DeleteLoop FB ITEMS Complete")
                                         
                                         if recepie.id != nil {
@@ -257,20 +269,42 @@ struct RecepiesListView: View{
                                         
                                         
                                     }
-                                    
+                                    //Add items
                                     else {
+
                                         let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
-                                        for recepieIngredient in recepie.ingredients {
-                                            let newItem = Item(itemName: recepieIngredient)
-                                            docRef.collection("userItems").document().setData([
-                                                
-                                                "itemName" : newItem.itemName,
-                                                "isBought" : newItem.isBought
-                                                
-                                            ])
+                                        for recepieItem in recepie.ingredientsAsItem! {
+                                            checkIfItemIsAdded(searchWord : recepieItem.itemName)
+                                            if !doesItemExist {
+                                                var newItem = Item(itemName: recepieItem.itemName,
+                                                                   itemQuantity: recepieItem.itemQuantity!,
+                                                                   itemMeasurement: recepieItem.itemMeasurement!,
+                                                                   isBought: false)
+                                                docRef.collection("userItems").document().setData([
+                                                    
+                                                    "itemMeasurement" : newItem.itemMeasurement,
+                                                    "itemQuantity" : newItem.itemQuantity,
+                                                    "itemName" : newItem.itemName,
+                                                    "isBought" : newItem.isBought
+                                                    
+                                                ])
+                                            } else {
+                                                print("\(recepieItem.itemName) - Finns redan, adderar kvantiteten med \(String(describing: recepieItem.itemQuantity))")
+
+                                                    for recipe in recepies.userItems {
+                                                        if recipe.itemName.lowercased() == recepieItem.itemName.lowercased() {
+                                                            var newValue = recipe.itemQuantity + recepieItem.itemQuantity!
+                                                            db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
+                                                                "itemQuantity" : newValue
+                                                            ])
+                                                        }
+                                                    }
+                                                doesItemExist = false
+                                            }
                                         }
+                       
                                         
                                         isRecepieAddedToDb = true
                                         print("added items Complete")
@@ -297,6 +331,14 @@ struct RecepiesListView: View{
         }
         .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
         
+    }
+    
+    func checkIfItemIsAdded(searchWord : String) {
+        for recipe in recepies.userItems {
+            if recipe.itemName == searchWord {
+                doesItemExist = true
+            }
+        }
     }
     
     func checkForRecepie() {
