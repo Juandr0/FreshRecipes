@@ -276,7 +276,7 @@ struct RecepiesListView: View{
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
                                         for recepieItem in recepie.ingredientsAsItem! {
-                                            checkIfItemIsAdded(searchWord : recepieItem.itemName)
+                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recepieItem.itemName.lowercased())
                                             if !doesItemExist {
                                                 var newItem = Item(itemName: recepieItem.itemName,
                                                                    itemQuantity: recepieItem.itemQuantity!,
@@ -333,13 +333,6 @@ struct RecepiesListView: View{
         
     }
     
-    func checkIfItemIsAdded(searchWord : String) {
-        for recipe in recepies.userItems {
-            if recipe.itemName == searchWord {
-                doesItemExist = true
-            }
-        }
-    }
     
     func checkForRecepie() {
         isRecepieAddedToDb = recepies.addedRecepieID.contains(recepie.id!)

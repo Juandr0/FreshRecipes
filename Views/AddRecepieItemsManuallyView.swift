@@ -45,7 +45,7 @@ struct AddRecepieItemsManuallyView: View {
                 Button(action: {
                     if userInput != "" {
                         if let currentUser {
-                            checkIfItemIsAdded(searchWord: userInput.lowercased())
+                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
                             if !doesItemExist {
                                 db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
                                     "itemName" : userInput.lowercased(),
@@ -89,15 +89,6 @@ struct AddRecepieItemsManuallyView: View {
             }
         }
     }
-    
-    func checkIfItemIsAdded(searchWord : String) {
-        for recipe in recepies.userItems {
-            if recipe.itemName == searchWord {
-                doesItemExist = true
-            }
-        }
-    }
-    
 }
 
 struct MeasurementPicker : View  {
