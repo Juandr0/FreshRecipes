@@ -60,9 +60,7 @@ struct DisplayFavoritesList: View{
     var body : some View {
 
             Section {
-                ZStack{
-
-                            
+                ZStack{        
                     VStack {
                         
                         HStack {
