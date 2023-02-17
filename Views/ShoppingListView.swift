@@ -45,7 +45,8 @@ struct ShoppingListView: View {
                                         }
                                     })){
                                         HStack{
-                                            Text(String(item.itemQuantity))
+                                            //If double ends with a "0" - display it as an int
+                                            Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
                                             Text(item.itemMeasurement)
                                             Spacer()
                                             Text(item.itemName)
@@ -57,7 +58,8 @@ struct ShoppingListView: View {
                                     
                                 }
                             }
-                        }.onDelete { indexSet in
+                        }
+                        .onDelete { indexSet in
                             guard let user = Auth.auth().currentUser else { return }
                             for index in indexSet {
                                 let item = recepies.userItems[index]
@@ -78,21 +80,32 @@ struct ShoppingListView: View {
                         
                         ForEach(recepies.userItems){ item in
                             if item.isBought{
-                                HStack{
-                                    Image(systemName: "checkmark.square")
-                                        .padding(.trailing, 20)
-                                    Button(item.itemName, action: ({
-                                        if let currentUser {
-                                            let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                            docRef.document(item.id!).updateData([
-                                                "isBought" : !item.isBought
-                                            ])
+                                    HStack{
+                                        Image(systemName: "checkmark.square")
+                                            .padding(.trailing, 20)
+                                        Button(action: ({
+                                            if let currentUser {
+                                                let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                                docRef.document(item.id!).updateData([
+                                                    "isBought" : !item.isBought
+                                                ])
+                                            }
+                                        })){
+                                            HStack{
+                                                //If double ends with a "0" - display it as an int
+                                                Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
+                                                Text(item.itemMeasurement)
+                                                Spacer()
+                                                Text(item.itemName)
+                                            }
+                                            .strikethrough()
+                                            
                                         }
-                                    }))
-                                    .strikethrough()
-                                    Spacer()
-                                        .backgroundStyle(.white)
-                                }
+                                   
+                                        Spacer()
+                                            .backgroundStyle(.white)
+                                        
+                                    }
                             }
                         }
                         .onDelete { indexSet in
