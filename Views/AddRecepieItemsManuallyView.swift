@@ -35,7 +35,7 @@ struct AddRecepieItemsManuallyView: View {
                     .multilineTextAlignment(.center)
                 HStack {
                     ItemQuantityPicker(inputQuantity: $inputQuantity)
-                    MeasurementPicker(measurement: $measurement)
+                    MeasurementPicker(measurement: $measurement, userInput: $userInput, recepies : recepies)
                 }
                 Spacer()
             }
@@ -57,8 +57,8 @@ struct AddRecepieItemsManuallyView: View {
                                 print("Finns redan, adderar kvantiteten istället")
 
                                 for recipe in recepies.userItems {
-                                    if recipe.itemName.lowercased() == userInput.lowercased() {
-                                        var newValue = inputQuantity + recipe.itemQuantity
+                                    if recipe.itemName.lowercased() == userInput.lowercased()  {
+                                        let newValue = inputQuantity + recipe.itemQuantity
                                         db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                             
                                             "itemQuantity" : newValue
@@ -93,6 +93,8 @@ struct AddRecepieItemsManuallyView: View {
 
 struct MeasurementPicker : View  {
     @Binding var measurement : String
+    @Binding var userInput : String
+    @ObservedObject var recepies : RecepiesList
     let measurementUnitsList = [  "g",
                                   "hg",
                                   "kg",

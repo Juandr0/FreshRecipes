@@ -19,10 +19,6 @@ struct ShoppingListView: View {
     
     
     var body: some View {
-        
-        //Ersätt lista med en forEach direkt för att göra listan dymanisk
-        //Alternativt hitta ngn funktion som tar in en int som begränsar och sätt den till list.size
-        
         NavigationView {
             ZStack{
                 VStack {
@@ -177,8 +173,8 @@ struct ShoppingListView: View {
                         }
                     }
                 } //ZStack end
+            }
         }
-    }
     
         func deleteAllItems(){
             if let currentUser {
