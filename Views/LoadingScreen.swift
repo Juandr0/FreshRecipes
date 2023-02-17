@@ -85,9 +85,9 @@ struct LoadingScreen: View {
 
     func retryLogin() {
         if !isUserLoggedIn {
-//            Auth.auth().signInAnonymously { authResult, error in
-//
-//            }
+            Auth.auth().signInAnonymously { authResult, error in
+
+            }
         }
     }
     

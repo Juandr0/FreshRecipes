@@ -59,7 +59,7 @@ struct RecepieView: View {
                                     filterQuery = ""
                                 }
                             }){
-                                Image(systemName: "hand.thumbsdown.fill")
+                                Image(systemName: "minus.circle")
                                     .resizable()
                                     .frame(width: 25, height: 25)
                                     .foregroundColor(.red)
@@ -70,7 +70,7 @@ struct RecepieView: View {
                             Spacer()
                         }
                         if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Skriv in sökordet och klicka på tumme ner för att exkludera ingredienser eller hela maträtter från din sökning")
+                            Text("Skriv in sökordet och klicka på knappen intill för att exkludera ingredienser eller hela maträtter från din sökning")
                                 .foregroundColor(.gray)
                         }
                         List(){
