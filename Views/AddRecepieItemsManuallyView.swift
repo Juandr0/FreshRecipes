@@ -39,14 +39,53 @@ struct AddRecepieItemsManuallyView: View {
                 }
                 Spacer()
             }
-            addNewItem(recepies : recepies,
-                       userInput: $userInput,
-                       inputQuantity: $inputQuantity,
-                       measurement : $measurement,
-                     
-                       doesItemExist: $doesItemExist,
-                       db : db
-             )
+            VStack{
+                Spacer()
+                Button(action: {
+                    if userInput != "" {
+                        if let currentUser {
+                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
+                            if !doesItemExist {
+                                db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
+                                    "itemName" : userInput.lowercased(),
+                                    "isBought" : false,
+                                    "itemMeasurement" : measurement,
+                                    "itemQuantity" : inputQuantity
+                                ])
+                            } else {
+                                print("Finns redan, adderar kvantiteten istället")
+
+                                for recipe in recepies.userItems {
+                                    if recipe.itemName.lowercased() == userInput.lowercased() {
+                                        let newValue = inputQuantity + recipe.itemQuantity
+                                        db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
+                                            
+                                            "itemQuantity" : newValue
+                                        ])
+                                    }
+                                }
+                                doesItemExist = false
+                            }
+                        }
+                    }
+                    userInput = ""
+                    dismiss()
+                    
+                }){
+                    HStack {
+                        Spacer()
+                        if userInput != ""{
+                            Image(systemName: "checkmark.circle")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.green)
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
+                        }
+                        
+                    }
+                }
+                
+            }
         }
     }
 }
@@ -140,68 +179,6 @@ struct ItemQuantityPicker : View {
 }
 
 
-struct addNewItem : View {
-    
-    @ObservedObject var recepies : RecepiesList
-    @Environment(\.dismiss) var dismiss
-    @Binding var userInput : String
-    @Binding var inputQuantity : Double
-    @Binding var measurement : String
-    @Binding var doesItemExist : Bool
-    
-    var db : Firestore
-    var currentUser = Auth.auth().currentUser
- 
-    
-    var body : some View {
-        VStack{
-            Spacer()
-            Button(action: {
-                if userInput != "" {
-                    if let currentUser {
-                        doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
-                        if !doesItemExist {
-                            db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
-                                "itemName" : userInput.lowercased(),
-                                "isBought" : false,
-                                "itemMeasurement" : measurement,
-                                "itemQuantity" : inputQuantity
-                            ])
-                        } else {
-                            print("Finns redan, adderar kvantiteten istället")
 
-                            for recipe in recepies.userItems {
-                                if recipe.itemName.lowercased() == userInput.lowercased() {
-                                    let newValue = inputQuantity + recipe.itemQuantity
-                                    db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
-                                        
-                                        "itemQuantity" : newValue
-                                    ])
-                                }
-                            }
-                            doesItemExist = false
-                        }
-                    }
-                }
-                userInput = ""
-                dismiss()
-                
-            }){
-                HStack {
-                    Spacer()
-                    if userInput != ""{
-                        Image(systemName: "checkmark.circle")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.green)
-                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
-                    }
-                    
-                }
-            }
-            
-        }
-    }
-}
 
                    
