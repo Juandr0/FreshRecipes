@@ -16,7 +16,7 @@ struct AddRecepieItemsManuallyView: View {
     @Environment(\.dismiss) var dismiss
     @State var userInput = ""
     @State var inputQuantity : Double = 0.0
-    @State var measurement = ""
+    @State var measurement = "g"
     @State var doesItemExist = false
     
     var db = Firestore.firestore()

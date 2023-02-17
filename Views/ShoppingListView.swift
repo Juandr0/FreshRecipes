@@ -22,6 +22,12 @@ struct ShoppingListView: View {
         NavigationView {
             ZStack{
                 VStack {
+                    if recepies.userItems.isEmpty {
+                        Text("Här var det tomt.. \nLägg till saker i listan så visas de här!")
+                            .foregroundColor(.gray)
+                            .padding(.top, 250)
+                    }
+                    
                     List {
                         ForEach(recepies.userItems){item in
                             if !item.isBought{
@@ -73,7 +79,7 @@ struct ShoppingListView: View {
                                 }
                             }
                         }
-                        
+          
                         ForEach(recepies.userItems){ item in
                             if item.isBought{
                                     HStack{
