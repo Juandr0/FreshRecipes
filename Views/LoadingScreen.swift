@@ -39,6 +39,14 @@ struct LoadingScreen: View {
     var body: some View {
         NavigationView{
             VStack {
+                    Image("AppLogoFR")
+                        .resizable()
+                        .frame(width: 350, height: 350)
+                    Text("Fresh Recipes")
+                    .font(Font.custom("Hoefler Text Italic", size: 50))
+                    .padding(.top, -80)
+                
+                Spacer()
                 Image(systemName: "circle.dashed")
                     .resizable()
                     .frame(width: 100, height: 100)
@@ -46,14 +54,16 @@ struct LoadingScreen: View {
                     .onReceive(rotationTimer) { _ in
                         rotationAngle += .degrees(1)
                     }
+          
                 
-                
+      
                 Text(loadingText)
                     .onReceive(textTimer) { _ in
                         loadingText = loadingTextList.randomElement()!
                     }
                     .padding(.top, 10)
                     .animation(.default, value: 5)
+                Spacer()
             }
             .onAppear {
                 loadingText = loadingTextList.randomElement()!

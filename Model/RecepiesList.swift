@@ -26,7 +26,7 @@ class RecepiesList : ObservableObject {
 
     
     init () {
-        fetchData2()
+        fetchData()
         listenToFirestore()
         listenToUserRecepies()
         listenToUserFavorites()
@@ -80,7 +80,7 @@ class RecepiesList : ObservableObject {
 //    }
 //
     
-    func fetchData2() {
+    func fetchData() {
         let dispatchGroup = DispatchGroup()
 
         db.collection("recepies").getDocuments() { (snapshot, err) in
@@ -142,48 +142,11 @@ class RecepiesList : ObservableObject {
             }
 
             dispatchGroup.notify(queue: .main) {
-                print("Function FetchData2 finished")
+                print("Function FetchData finished")
             }
         }
     }
 
-
-        
-    
-    
-    func FetchData() {
-        
-        db.collection("recepies").getDocuments() { (snapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err)")
-                return
-            }
-            
-            guard let snapshot = snapshot else {
-                print("snapshot is nil")
-                return
-            }
-                for document in snapshot.documents {
-                    let result = Result {
-                        try document.data(as: Recepie.self)
-                    }
-                
-                    switch result {
-                    case .success(let newRecepie) :
-                        //adda alla items här
-                        //newRecepie.ingredientsAsItem
-                        
-                        self.allRecepies.append(newRecepie)
-                    case .failure(let err) :
-                        Swift.print("\(err)")
-                    }
-                    
-                    }
-                
-            }
-        print("function FetchData finished")
-        }
-    
     
     func listenToFirestore() {
         guard let currentUser = currentUser else {
@@ -250,7 +213,17 @@ class RecepiesList : ObservableObject {
         print("Function listenToFavoritesList finished")
     }
     
-
+    func checkIfItemIsAdded(searchWord : String) -> Bool {
+        for recipe in self.userItems {
+            if recipe.itemName == searchWord {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    
     }
 
 

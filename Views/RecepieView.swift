@@ -59,7 +59,7 @@ struct RecepieView: View {
                                     filterQuery = ""
                                 }
                             }){
-                                Image(systemName: "hand.thumbsdown.fill")
+                                Image(systemName: "minus.circle")
                                     .resizable()
                                     .frame(width: 25, height: 25)
                                     .foregroundColor(.red)
@@ -70,7 +70,7 @@ struct RecepieView: View {
                             Spacer()
                         }
                         if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Skriv in sökordet och klicka på tumme ner för att exkludera ingredienser eller hela maträtter från din sökning")
+                            Text("Skriv in sökordet och klicka på knappen intill för att exkludera ingredienser eller hela maträtter från din sökning")
                                 .foregroundColor(.gray)
                         }
                         List(){
@@ -276,7 +276,7 @@ struct RecepiesListView: View{
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
                                         for recepieItem in recepie.ingredientsAsItem! {
-                                            checkIfItemIsAdded(searchWord : recepieItem.itemName)
+                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recepieItem.itemName.lowercased())
                                             if !doesItemExist {
                                                 var newItem = Item(itemName: recepieItem.itemName,
                                                                    itemQuantity: recepieItem.itemQuantity!,
@@ -333,13 +333,6 @@ struct RecepiesListView: View{
         
     }
     
-    func checkIfItemIsAdded(searchWord : String) {
-        for recipe in recepies.userItems {
-            if recipe.itemName == searchWord {
-                doesItemExist = true
-            }
-        }
-    }
     
     func checkForRecepie() {
         isRecepieAddedToDb = recepies.addedRecepieID.contains(recepie.id!)
