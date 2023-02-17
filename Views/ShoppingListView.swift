@@ -147,7 +147,7 @@ struct ShoppingListView: View {
                             Spacer()
                             
                             
-                            NavigationLink(destination: AddRecepieItemsManuallyView()) {
+                            NavigationLink(destination: AddRecepieItemsManuallyView(recepies: recepies)) {
                                 Image(systemName: "plus.circle")
                                     .resizable()
                                     .frame(width: 30, height: 30)

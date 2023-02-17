@@ -24,7 +24,7 @@ struct RecepieView: View {
     @State var filterQuery = ""
     @State var signedIn = false
     @State var excludeRecepie = false
-    
+
     @State var isFilterViewCollapsed = true
     @State var filterListExcluded = [String]()
     let currentUser = Auth.auth().currentUser
@@ -165,6 +165,8 @@ struct RecepiesListView: View{
     @State var isRecepieAddedToDb = false
     @State var isRecepieFavouriteMarked = false
     @State var searchQuery = ""
+    @State var doesItemExist = false
+    
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
@@ -259,24 +261,40 @@ struct RecepiesListView: View{
                                     }
                                     //Add items
                                     else {
+
                                         let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
                                         for recepieItem in recepie.ingredientsAsItem! {
-                                            
-                                            var newItem = Item(itemName: recepieItem.itemName,
-                                                               itemQuantity: recepieItem.itemQuantity!,
-                                                               itemMeasurement: recepieItem.itemMeasurement!,
-                                                               isBought: false)
-                                            docRef.collection("userItems").document().setData([
-                                                
-                                                "itemMeasurement" : newItem.itemMeasurement,
-                                                "itemQuantity" : newItem.itemQuantity,
-                                                "itemName" : newItem.itemName,
-                                                "isBought" : newItem.isBought
-                                                
-                                            ])
+                                            checkIfItemIsAdded(searchWord : recepieItem.itemName)
+                                            if !doesItemExist {
+                                                var newItem = Item(itemName: recepieItem.itemName,
+                                                                   itemQuantity: recepieItem.itemQuantity!,
+                                                                   itemMeasurement: recepieItem.itemMeasurement!,
+                                                                   isBought: false)
+                                                docRef.collection("userItems").document().setData([
+                                                    
+                                                    "itemMeasurement" : newItem.itemMeasurement,
+                                                    "itemQuantity" : newItem.itemQuantity,
+                                                    "itemName" : newItem.itemName,
+                                                    "isBought" : newItem.isBought
+                                                    
+                                                ])
+                                            } else {
+                                                print("\(recepieItem.itemName) - Finns redan, adderar kvantiteten med \(String(describing: recepieItem.itemQuantity))")
+
+                                                    for recipe in recepies.userItems {
+                                                        if recipe.itemName.lowercased() == recepieItem.itemName.lowercased() {
+                                                            var newValue = recipe.itemQuantity + recepieItem.itemQuantity!
+                                                            db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
+                                                                "itemQuantity" : newValue
+                                                            ])
+                                                        }
+                                                    }
+                                                doesItemExist = false
+                                            }
                                         }
+                       
                                         
                                         isRecepieAddedToDb = true
                                         print("added items Complete")
@@ -303,6 +321,14 @@ struct RecepiesListView: View{
         }
         .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
         
+    }
+    
+    func checkIfItemIsAdded(searchWord : String) {
+        for recipe in recepies.userItems {
+            if recipe.itemName == searchWord {
+                doesItemExist = true
+            }
+        }
     }
     
     func checkForRecepie() {
