@@ -66,20 +66,6 @@ class RecepiesList : ObservableObject {
     
     
     
-    
-//    func FetchAddedRecepies() {
-//        for addedID in addedRecepieID {
-//            for recepie in allRecepies {
-//                if recepie.id == addedID {
-//                    for itemToBuy in recepie.ingredients {
-//                        userItems.append(Item(itemName: itemToBuy))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-    
     func fetchData() {
         let dispatchGroup = DispatchGroup()
 

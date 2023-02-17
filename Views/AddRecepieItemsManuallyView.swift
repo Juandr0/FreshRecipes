@@ -16,7 +16,7 @@ struct AddRecepieItemsManuallyView: View {
     @Environment(\.dismiss) var dismiss
     @State var userInput = ""
     @State var inputQuantity : Double = 0.0
-    @State var measurement = ""
+    @State var measurement = "g"
     @State var doesItemExist = false
     
     var db = Firestore.firestore()
@@ -39,7 +39,6 @@ struct AddRecepieItemsManuallyView: View {
                 }
                 Spacer()
             }
-        
             VStack{
                 Spacer()
                 Button(action: {
@@ -58,7 +57,7 @@ struct AddRecepieItemsManuallyView: View {
 
                                 for recipe in recepies.userItems {
                                     if recipe.itemName.lowercased() == userInput.lowercased() {
-                                        var newValue = inputQuantity + recipe.itemQuantity
+                                        let newValue = inputQuantity + recipe.itemQuantity
                                         db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                             
                                             "itemQuantity" : newValue
@@ -99,19 +98,19 @@ struct MeasurementPicker : View  {
                                   "ml",
                                   "cl",
                                   "dl",
-                                  "liter",
+                                  "l",
                                   "tsk",
                                   "msk",
                                   "st",
-                                  "förpackning",
+                                  "förp",
                                   "burk",
-                                  "portion",
+                                  "port",
                                   "kruka"]
 
 
     var body : some View {
         VStack{
-            Picker("Mått", selection: $measurement)  {
+            Picker("Mått (gäller bara ej tillagda föremål)", selection: $measurement)  {
                 ForEach(measurementUnitsList, id: \.self) { unit in
                     Text("\(unit)")
                 }

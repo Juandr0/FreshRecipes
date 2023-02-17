@@ -90,22 +90,16 @@ struct RecepieView: View {
                                             Image(systemName: "minus.circle")
                                                 .resizable()
                                                 .frame(width: 20, height: 20)
-                                                .foregroundColor(.red)
-                                                
+                                                .foregroundColor(.red)                
                                         }
                                     }
                                 }
                             }
                         }.listStyle(.inset)
                             .listRowBackground(Color.accentColor)
-              
                             Spacer()
                     }.padding(.leading, 20)
-               
-   
                 }
-
-                
                 List() {
                     ForEach(recepies.allRecepies.filter {
                         //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
@@ -124,30 +118,10 @@ struct RecepieView: View {
                                 }
                                 .navigationTitle("Recept")
                         }
-                         
-                
                     }
                 }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                     .listStyle(.inset)
                     .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
-            }
-                .onAppear{
-                    //init recept
-                    
-                    
-                    //                db.collection("recepies").document().setData( [
-                    //                    "name" : nyttRecept.name,
-                    //                    "portions" : nyttRecept.portions,
-                    //                    "ingredients" : nyttRecept.ingredients,
-                    //                    "allergenics" : nyttRecept.allergenics,
-                    //                    "instructions" : nyttRecept.instructions,
-                    //                    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
-                    //                    "isAdded" : nyttRecept.isAdded,
-                    //                    "imageUrl" : nyttRecept.imageUrl
-                    //
-                    //                ]
-                    //                )
-                       
             }
         }
 
@@ -215,26 +189,12 @@ struct RecepiesListView: View{
                         HStack {
                             Spacer()
                             Button(action: {
+                                
                                 //Removes item from cart
                                 let searchString = recepie.id
                                 if let currentUser {
-                                    
                                     let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    
                                     if recepies.addedRecepieID.contains(searchString!){
-                                        
-                                        //dessa rader måste vara problemet
-                                        //                                        for recepieIngredient in recepie.ingredients {
-                                        //                                            for addedIngredient in recepies.userItems{
-                                        //                                                 if recepieIngredient == addedIngredient.itemName{
-                                        //                                                     docRef.document(addedIngredient.id!).delete()
-                                        //                                                 }
-                                        //                                             }
-                                        //                                         }
-                                        
-                                        //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
-                                        //Note: Samma fel.
-                                        
                                         for recipeItem in recepie.ingredientsAsItem! {
                                             if let userIndex = recepies.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
                                                 if userIndex < recepies.userItems.count {
@@ -269,7 +229,7 @@ struct RecepiesListView: View{
                                         
                                         
                                     }
-                                    //Add items
+                                    //Adds items to the cart
                                     else {
 
                                         let docRef = db.collection("users").document(currentUser.uid)
