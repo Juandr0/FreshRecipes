@@ -235,10 +235,19 @@ struct RecepiesListView: View{
                                         //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
                                         //Note: Samma fel.
                                         
-                                        for recepieItem in recepie.ingredientsAsItem! {
-                                            if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieItem.itemName }) {
-                                                if index >= 0 && index < recepies.userItems.count {
-                                                    docRef.document(recepies.userItems[index].id!).delete()
+                                        for recipeItem in recepie.ingredientsAsItem! {
+                                            if let userIndex = recepies.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
+                                                if userIndex < recepies.userItems.count {
+                                                    let userItem = recepies.userItems[userIndex]
+                                                    if userItem.itemQuantity > recipeItem.itemQuantity! {
+                                                        let newValue = userItem.itemQuantity - recipeItem.itemQuantity!
+                                                        db.collection("users").document(currentUser.uid).collection("userItems").document(userItem.id!).updateData([
+                                                            "itemQuantity": newValue
+                                                        ])
+                                                        print("Det finns mer av \(recipeItem.itemName) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
+                                                    } else {
+                                                        docRef.document(userItem.id!).delete()
+                                                    }
                                                 } else {
                                                     print("Index out of range")
                                                 }
@@ -246,6 +255,7 @@ struct RecepiesListView: View{
                                                 print("Item not found")
                                             }
                                         }
+
                                         print("DeleteLoop FB ITEMS Complete")
                                         
                                         if recepie.id != nil {
