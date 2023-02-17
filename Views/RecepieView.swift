@@ -70,7 +70,7 @@ struct RecepieView: View {
                             Spacer()
                         }
                         if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Skriv in sökordet och klicka på knappen intill för att exkludera ingredienser eller hela maträtter från din sökning")
+                            Text("Skriv in sökordet och klicka på knappen för att exkludera ingredienser eller hela maträtter från din sökning. Skriv exempelvis 'fisk' eller 'flygande jacob'")
                                 .foregroundColor(.gray)
                         }
                         List(){
