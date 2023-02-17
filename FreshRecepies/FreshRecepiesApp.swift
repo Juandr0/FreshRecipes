@@ -15,9 +15,9 @@ struct FreshRecepiesApp: App {
     
     init() {
         FirebaseApp.configure()
-        Auth.auth().signInAnonymously { authResult, error in
-
-        }
+//        Auth.auth().signInAnonymously { authResult, error in
+//
+//        }
     }
     
     
