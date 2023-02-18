@@ -14,7 +14,7 @@ import FirebaseAuth
 struct AddRecepieItemsManuallyView: View {
     @ObservedObject var recepies : RecepiesList
     @State var userInput = ""
-    @State var inputQuantity : Double = 0.0
+    @State var inputQuantity : Double = 1.0
     @State var measurement = "g"
     @State var doesItemExist = false
     
@@ -148,10 +148,8 @@ struct MeasurementPicker : View  {
 
 struct ItemQuantityPicker : View {
     @Binding var inputQuantity : Double
-   
     
     let decimalList = [
-        0.0,
         0.25,
         0.5,
         0.75,
@@ -201,7 +199,6 @@ struct ItemQuantityPicker : View {
             }
         }
         .pickerStyle(WheelPickerStyle())
-
     }
 }
 
