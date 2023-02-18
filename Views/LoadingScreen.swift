@@ -18,7 +18,6 @@ struct LoadingScreen: View {
                            "Letar efter kokboken..",
                            "Startar ugnen..",
                            "Konsulterar med fjolårets mästerkock..",
-                           "Letar efter kockmössan..",
                            "Letar efter bläck till inköpslistan..",
                            ]
     

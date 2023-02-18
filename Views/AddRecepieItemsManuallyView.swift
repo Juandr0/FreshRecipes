@@ -15,7 +15,7 @@ struct AddRecepieItemsManuallyView: View {
     @ObservedObject var recepies : RecepiesList
     @State var userInput = ""
     @State var inputQuantity : Double = 1.0
-    @State var measurement = "g"
+    @State var measurement = "st"
     @State var doesItemExist = false
     
 
@@ -117,7 +117,9 @@ struct UpdateAndAddItems : View {
 
 struct MeasurementPicker : View  {
     @Binding var measurement : String
-    let measurementUnitsList = [  "g",
+    let measurementUnitsList = [
+                                  "st",
+                                  "g",
                                   "hg",
                                   "kg",
                                   "ml",
@@ -126,7 +128,6 @@ struct MeasurementPicker : View  {
                                   "l",
                                   "tsk",
                                   "msk",
-                                  "st",
                                   "förp",
                                   "burk",
                                   "port",
