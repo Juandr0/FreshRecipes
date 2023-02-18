@@ -17,25 +17,16 @@ extension String {
 }
 
 struct RecepieView: View {
-    let db = Firestore.firestore()
     @ObservedObject var recepies : RecepiesList
-    
-    @State var signedIn = false
-    @State var excludeRecepie = false
-    let currentUser = Auth.auth().currentUser
-    
     
     var body: some View {
         NavigationView {
             VStack{
-                SearchFilterView(recepies : recepies,
-                                 db : db)
+                SearchFilterView(recepies : recepies)
             }
         }
 
     }
-    
-
 }
     
 
@@ -226,7 +217,8 @@ struct SearchFilterView : View {
     @State var searchQuery = ""
     @State var isFilterViewCollapsed = true
     
-    var db : Firestore
+    var db = Firestore.firestore()
+    
     
     var body : some View {
         HStack {

@@ -107,9 +107,7 @@ struct UpdateAndAddItems : View {
             }
             
         }
-    }
-    
-    
+    }  
 }
 
 
