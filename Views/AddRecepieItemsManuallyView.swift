@@ -13,13 +13,12 @@ import FirebaseAuth
 
 struct AddRecepieItemsManuallyView: View {
     @ObservedObject var recepies : RecepiesList
-    @Environment(\.dismiss) var dismiss
     @State var userInput = ""
-    @State var inputQuantity : Double = 0.0
-    @State var measurement = "g"
+    @State var inputQuantity : Double = 1.0
+    @State var measurement = "st"
     @State var doesItemExist = false
     
-    var db = Firestore.firestore()
+
     var currentUser = Auth.auth().currentUser
  
 
@@ -27,7 +26,6 @@ struct AddRecepieItemsManuallyView: View {
   
     
     var body : some View {
-
         ZStack {
             VStack{
                 Spacer()
@@ -39,60 +37,89 @@ struct AddRecepieItemsManuallyView: View {
                 }
                 Spacer()
             }
-            VStack{
-                Spacer()
-                Button(action: {
-                    if userInput != "" {
-                        if let currentUser {
-                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
-                            if !doesItemExist {
-                                db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
-                                    "itemName" : userInput.lowercased(),
-                                    "isBought" : false,
-                                    "itemMeasurement" : measurement,
-                                    "itemQuantity" : inputQuantity
-                                ])
-                            } else {
-                                print("Finns redan, adderar kvantiteten istället")
-
-                                for recipe in recepies.userItems {
-                                    if recipe.itemName.lowercased() == userInput.lowercased() {
-                                        let newValue = inputQuantity + recipe.itemQuantity
-                                        db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
-                                            
-                                            "itemQuantity" : newValue
-                                        ])
-                                    }
-                                }
-                                doesItemExist = false
-                            }
-                        }
-                    }
-                    userInput = ""
-                    dismiss()
-                    
-                }){
-                    HStack {
-                        Spacer()
-                        if userInput != ""{
-                            Image(systemName: "checkmark.circle")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(.green)
-                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
-                        }
-                        
-                    }
-                }
-                
-            }
+            UpdateAndAddItems(recepies : recepies,
+                              userInput: $userInput,
+                              inputQuantity: $inputQuantity,
+                              measurement: $measurement,
+                              doesItemExist: $doesItemExist)
         }
     }
 }
 
+
+struct UpdateAndAddItems : View {
+    @Environment(\.dismiss) var dismiss
+    
+    @ObservedObject var recepies : RecepiesList
+    @Binding var userInput : String
+    @Binding var inputQuantity : Double
+    @Binding var measurement : String
+    @Binding var doesItemExist : Bool
+
+    var db = Firestore.firestore()
+    var currentUser = Auth.auth().currentUser
+    
+    var body : some View {
+        VStack{
+            Spacer()
+            Button(action: {
+                if userInput != "" {
+                    if let currentUser {
+                        doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
+                        if !doesItemExist {
+                            db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
+                                "itemName" : userInput.lowercased(),
+                                "isBought" : false,
+                                "itemMeasurement" : measurement,
+                                "itemQuantity" : inputQuantity
+                            ])
+                        } else {
+                            print("Finns redan, adderar kvantiteten istället")
+
+                            for recipe in recepies.userItems {
+                                if recipe.itemName.lowercased() == userInput.lowercased() {
+                                    let newValue = inputQuantity + recipe.itemQuantity
+                                    db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
+                                        
+                                        "itemQuantity" : newValue
+                                    ])
+                                }
+                            }
+                            doesItemExist = false
+                        }
+                    }
+                }
+                userInput = ""
+                dismiss()
+                
+            }){
+                HStack {
+                    Spacer()
+                    if userInput != ""{
+                        Image(systemName: "checkmark.circle")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.green)
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
+                    }
+                    
+                }
+            }
+            
+        }
+    }
+    
+    
+}
+
+
+
+
 struct MeasurementPicker : View  {
     @Binding var measurement : String
-    let measurementUnitsList = [  "g",
+    let measurementUnitsList = [
+                                  "st",
+                                  "g",
                                   "hg",
                                   "kg",
                                   "ml",
@@ -101,7 +128,6 @@ struct MeasurementPicker : View  {
                                   "l",
                                   "tsk",
                                   "msk",
-                                  "st",
                                   "förp",
                                   "burk",
                                   "port",
@@ -119,12 +145,12 @@ struct MeasurementPicker : View  {
     }
 }
 
+
+
 struct ItemQuantityPicker : View {
     @Binding var inputQuantity : Double
-   
     
     let decimalList = [
-        0.0,
         0.25,
         0.5,
         0.75,
@@ -174,7 +200,6 @@ struct ItemQuantityPicker : View {
             }
         }
         .pickerStyle(WheelPickerStyle())
-
     }
 }
 

@@ -133,8 +133,7 @@ struct RecepieView: View {
 
 
 struct RecepiesListView: View{
-    
-    
+
     @ObservedObject var recepies : RecepiesList
     @State var isRecepieAddedToDb = false
     @State var isRecepieFavouriteMarked = false
@@ -238,7 +237,7 @@ struct RecepiesListView: View{
                                         for recepieItem in recepie.ingredientsAsItem! {
                                             doesItemExist = recepies.checkIfItemIsAdded(searchWord: recepieItem.itemName.lowercased())
                                             if !doesItemExist {
-                                                var newItem = Item(itemName: recepieItem.itemName,
+                                                let newItem = Item(itemName: recepieItem.itemName,
                                                                    itemQuantity: recepieItem.itemQuantity!,
                                                                    itemMeasurement: recepieItem.itemMeasurement!,
                                                                    isBought: false)
@@ -255,7 +254,7 @@ struct RecepiesListView: View{
 
                                                     for recipe in recepies.userItems {
                                                         if recipe.itemName.lowercased() == recepieItem.itemName.lowercased() {
-                                                            var newValue = recipe.itemQuantity + recepieItem.itemQuantity!
+                                                            let newValue = recipe.itemQuantity + recepieItem.itemQuantity!
                                                             db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                                                 "itemQuantity" : newValue
                                                             ])
