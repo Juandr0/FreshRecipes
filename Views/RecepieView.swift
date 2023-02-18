@@ -1,5 +1,5 @@
 //
-//  RecepieView.swift
+//  RecipeView.swift
 //  FreshRecepies
 //
 //  Created by Alexander Carlsson on 2023-01-23.
@@ -16,118 +16,17 @@ extension String {
     }
 }
 
-struct RecepieView: View {
-    let db = Firestore.firestore()
+struct RecipeView: View {
     @ObservedObject var recepies : RecepiesList
-    
-    @State var searchQuery = ""
-    @State var filterQuery = ""
-    @State var signedIn = false
-    @State var excludeRecepie = false
-
-    @State var isFilterViewCollapsed = true
-    @State var filterListExcluded = [String]()
-    let currentUser = Auth.auth().currentUser
-    
     
     var body: some View {
         NavigationView {
             VStack{
-                HStack {
-                    Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här för att gömma dina filter")
-                        .onTapGesture {
-                            self.isFilterViewCollapsed.toggle()
-                        }
-                    Image(systemName: "magnifyingglass" )
-                        .rotationEffect(.degrees(isFilterViewCollapsed ? 0 : 45))
-                        .animation(isFilterViewCollapsed ? .easeInOut(duration: 0.1)  : .default)
-                        .onTapGesture {
-                            self.isFilterViewCollapsed.toggle()
-                        }
-                    Spacer()
-                }.padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
-                if !isFilterViewCollapsed {
-                    VStack{
-                        HStack{
-                            TextField("Skriv här för att lägga till ett nytt filter", text: $filterQuery)
-                                .padding(.leading,20)
-  
-                            Spacer()
-                            Button(action: {
-                                if (filterQuery != "") {
-                                    filterListExcluded.append(filterQuery.lowercased())
-                                    filterQuery = ""
-                                }
-                            }){
-                                Image(systemName: "minus.circle")
-                                    .resizable()
-                                    .frame(width: 25, height: 25)
-                                    .foregroundColor(.red)
-                                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
-                            }
-                          
-                     
-                            Spacer()
-                        }
-                        if (filterQuery != "" && filterListExcluded.isEmpty) {
-                            Text("Skriv in sökordet och klicka på knappen för att exkludera ingredienser eller hela maträtter från din sökning. Skriv exempelvis 'fisk' eller 'flygande jacob'")
-                                .foregroundColor(.gray)
-                        }
-                        List(){
-                            if !filterListExcluded.isEmpty {
-                                ForEach(filterListExcluded, id: \.self) {ingredient in
-                                    HStack{
-                                       
-                                        Image(systemName: "hand.thumbsdown.fill")
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .foregroundColor(.red)
-                                        Text(ingredient.prefix(1).capitalized + ingredient.dropFirst())
-                                        Spacer()
-                                        Button(action: {
-                                            filterListExcluded.removeAll(where: {$0 == ingredient})
-                                        }){
-                                            Image(systemName: "minus.circle")
-                                                .resizable()
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(.red)                
-                                        }
-                                    }
-                                }
-                            }
-                        }.listStyle(.inset)
-                            .listRowBackground(Color.accentColor)
-                            Spacer()
-                    }.padding(.leading, 20)
-                }
-                List() {
-                    ForEach(recepies.allRecepies.filter {
-                        //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
-                            self.searchQuery.isEmpty ? true :
-                                $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
-                    }, id: \.self) {recepie in
-                            
-                            //Recepies that contains filtered out words is removed here
-                        if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
-                            !filterListExcluded.contains(recepie.name.lowercased()))
-                        {
-                            
-                            //Displays the recepies
-                                NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                                    RecepiesListView(recepies: recepies, db: db, recepie: recepie)
-                                }
-                                .navigationTitle("Recept")
-                        }
-                    }
-                }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                    .listStyle(.inset)
-                    .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
+                SearchFilterView(recepies : recepies)
             }
         }
 
     }
-    
-
 }
     
 
@@ -311,8 +210,120 @@ struct RecepiesListView: View{
 }
 
 
+struct SearchFilterView : View {
+    @ObservedObject var recepies : RecepiesList
+    @State var filterListExcluded = [String]()
+    @State var filterQuery = ""
+    @State var searchQuery = ""
+    @State var isFilterViewCollapsed = true
+    
+    var db = Firestore.firestore()
+    
+    
+    var body : some View {
+        HStack {
+            Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här för att gömma dina filter")
+                .onTapGesture {
+                    self.isFilterViewCollapsed.toggle()
+                }
+            Image(systemName: "magnifyingglass" )
+                .rotationEffect(.degrees(isFilterViewCollapsed ? 0 : 45))
+                .animation(isFilterViewCollapsed ? .easeInOut(duration: 0.1)  : .default)
+                .onTapGesture {
+                    self.isFilterViewCollapsed.toggle()
+                }
+            Spacer()
+        }.padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
+        if !isFilterViewCollapsed {
+            VStack{
+                HStack{
+                    TextField("Skriv här för att lägga till ett nytt filter", text: $filterQuery)
+                        .padding(.leading,20)
+
+                    Spacer()
+                    Button(action: {
+                        if (filterQuery != "") {
+                            filterListExcluded.append(filterQuery.lowercased())
+                            filterQuery = ""
+                        }
+                    }){
+                        Image(systemName: "minus.circle")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.red)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                    }
+                  
+             
+                    Spacer()
+                }
+                if (filterQuery != "" && filterListExcluded.isEmpty) {
+                    Text("Skriv in sökordet och klicka på knappen för att exkludera ingredienser eller hela maträtter från din sökning. Skriv exempelvis 'fisk' eller 'flygande jacob'")
+                        .foregroundColor(.gray)
+                }
+                List(){
+                    if !filterListExcluded.isEmpty {
+                        ForEach(filterListExcluded, id: \.self) {ingredient in
+                            HStack{
+                               
+                                Image(systemName: "hand.thumbsdown.fill")
+                                    .resizable()
+                                    .frame(width: 15, height: 15)
+                                    .foregroundColor(.red)
+                                Text(ingredient.prefix(1).capitalized + ingredient.dropFirst())
+                                Spacer()
+                                Button(action: {
+                                    filterListExcluded.removeAll(where: {$0 == ingredient})
+                                }){
+                                    Image(systemName: "minus.circle")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                    }
+                }.listStyle(.inset)
+                    .listRowBackground(Color.accentColor)
+                    Spacer()
+            }.padding(.leading, 20)
+        }
+        List() {
+            ForEach(recepies.allRecepies.filter {
+                //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
+                    self.searchQuery.isEmpty ? true :
+                        $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+            }, id: \.self) {recepie in
+                    
+                    //Recepies that contains filtered out words is removed here
+                if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
+                    !filterListExcluded.contains(recepie.name.lowercased()))
+                {
+                    
+                    //Displays the recepies
+                        NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
+                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                        }
+                        .navigationTitle("Recept")
+                }
+            }
+        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+            .listStyle(.inset)
+            .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
+        
+        
+    }
+}
+
+
+
+
+
+
+
+
 //struct RecepieView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        RecepieView()
+//        RecipeView()
 //    }
 //}

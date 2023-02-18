@@ -22,7 +22,7 @@ struct StartPageView: View {
         
         if isUserLoggedIn  {
             TabView {
-                RecepieView(recepies : recepies)
+                RecipeView(recepies : recepies)
                     .tabItem {
                         Image(systemName: "fork.knife")
                         Text("Recepies")
