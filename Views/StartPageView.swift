@@ -10,48 +10,47 @@ import Firebase
 import FirebaseAuth
 
 struct StartPageView: View {
-
-    @StateObject var recepies = RecepiesList()
-    @State var isUserLoggedIn = false
+@State var isUserLoggedIn = false
     
     let db = Firestore.firestore()
     let currentUser = Auth.auth().currentUser
-
-
+    
+    
     var body: some View {
-        
         if isUserLoggedIn  {
-            TabView {
-                RecipeView(recepies : recepies)
-                    .tabItem {
-                        Image(systemName: "fork.knife")
-                        Text("Recepies")
-                    }
-                  
-
-                ShoppingListView(recepies : recepies)
-                    .tabItem{
-                        Image(systemName: "list.clipboard")
-                        Text("Shopping list")
-                    }
-                   
-                
-                FavoriteView(recepies : recepies)
-                    .tabItem{
-                        Image(systemName: "heart")
-                        Text("Favorites")
-                    }
-            }
+            NavigationTabView()
         }
         else {
             LoadingScreen(isUserLoggedIn: $isUserLoggedIn)
         }
     }
+}
+
+struct NavigationTabView : View {
     
+@StateObject var recepies = RecepiesList()
     
-    //struct StartPageView_Previews: PreviewProvider {
-    //    static var previews: some View {
-    //        StartPageView()
-    //    }
-    //}
+    var body : some View {
+        TabView {
+            RecipeView(recepies : recepies)
+                .tabItem {
+                    Image(systemName: "fork.knife")
+                    Text("Recept")
+                }
+              
+
+            ShoppingListView(recepies : recepies)
+                .tabItem{
+                    Image(systemName: "list.clipboard")
+                    Text("Inköpslista")
+                }
+               
+            
+            FavoriteView(recepies : recepies)
+                .tabItem{
+                    Image(systemName: "heart")
+                    Text("Favoriter")
+                }
+        }.tint(.orange)
+    }
 }
