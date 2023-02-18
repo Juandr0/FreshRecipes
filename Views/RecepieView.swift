@@ -1,5 +1,5 @@
 //
-//  RecepieView.swift
+//  RecipeView.swift
 //  FreshRecepies
 //
 //  Created by Alexander Carlsson on 2023-01-23.
@@ -16,7 +16,7 @@ extension String {
     }
 }
 
-struct RecepieView: View {
+struct RecipeView: View {
     @ObservedObject var recepies : RecepiesList
     
     var body: some View {
@@ -324,6 +324,6 @@ struct SearchFilterView : View {
 
 //struct RecepieView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        RecepieView()
+//        RecipeView()
 //    }
 //}
