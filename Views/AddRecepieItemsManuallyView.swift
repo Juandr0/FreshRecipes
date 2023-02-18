@@ -33,7 +33,9 @@ struct AddRecepieItemsManuallyView: View {
                     .multilineTextAlignment(.center)
                 HStack {
                     ItemQuantityPicker(inputQuantity: $inputQuantity)
-                    MeasurementPicker(measurement: $measurement)
+                    MeasurementPicker(userInput : $userInput,
+                                      measurement : $measurement,
+                                      recepies : recepies )
                 }
                 Spacer()
             }
@@ -114,23 +116,26 @@ struct UpdateAndAddItems : View {
 
 
 struct MeasurementPicker : View  {
+    @Binding var userInput : String
     @Binding var measurement : String
+    @ObservedObject var recepies : RecepiesList
+    
     let measurementUnitsList = [
-                                  "st",
-                                  "g",
-                                  "hg",
-                                  "kg",
-                                  "ml",
-                                  "cl",
-                                  "dl",
-                                  "l",
-                                  "tsk",
-                                  "msk",
-                                  "förp",
-                                  "burk",
-                                  "port",
-                                  "kruka"]
-
+        "st",
+        "g",
+        "hg",
+        "kg",
+        "ml",
+        "cl",
+        "dl",
+        "l",
+        "tsk",
+        "msk",
+        "förp",
+        "burk",
+        "port",
+        "kruka"
+    ]
 
     var body : some View {
         VStack{
@@ -140,8 +145,20 @@ struct MeasurementPicker : View  {
                 }
             }.pickerStyle(WheelPickerStyle())
         }
+        .onChange(of: userInput) { _ in
+            test()
+        }
+    }
+    
+    func test() {
+        for item in recepies.userItems {
+            if item.itemName == userInput.lowercased() {
+                measurement = item.itemMeasurement
+            }
+        }
     }
 }
+
 
 
 
