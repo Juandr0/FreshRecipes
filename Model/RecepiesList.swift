@@ -12,6 +12,7 @@ import FirebaseCore
 import FirebaseFirestoreSwift
 import FirebaseAuth
 
+
 class RecepiesList : ObservableObject {
     @Published var allRecepies = [Recepie]()
     @Published var addedRecepieID = [String]()
@@ -25,7 +26,7 @@ class RecepiesList : ObservableObject {
 
     
     init () {
-        FetchData()
+        fetchData()
         listenToFirestore()
         listenToUserRecepies()
         listenToUserFavorites()
@@ -65,51 +66,73 @@ class RecepiesList : ObservableObject {
     
     
     
-    
-//    func FetchAddedRecepies() {
-//        for addedID in addedRecepieID {
-//            for recepie in allRecepies {
-//                if recepie.id == addedID {
-//                    for itemToBuy in recepie.ingredients {
-//                        userItems.append(Item(itemName: itemToBuy))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-    
-    
-    
-    func FetchData() {
+    func fetchData() {
+        let dispatchGroup = DispatchGroup()
+
         db.collection("recepies").getDocuments() { (snapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
                 return
             }
-            
+
             guard let snapshot = snapshot else {
                 print("snapshot is nil")
                 return
             }
-                for document in snapshot.documents {
-                    let result = Result {
-                        try document.data(as: Recepie.self)
+
+            for document in snapshot.documents {
+                let recepieResult = Result {
+                    try document.data(as: Recepie.self)
+                }
+
+                switch recepieResult {
+                case .success(var newRecepie):
+                    dispatchGroup.enter() // Enter the dispatch group before fetching ingredients data
+
+                    let ingredientsCollectionRef = document.reference.collection("ingredientsAsItem")
+                    ingredientsCollectionRef.getDocuments { (ingredientsSnapshot, ingredientsErr) in
+                        if let ingredientsErr = ingredientsErr {
+                            print("Error getting ingredients documents: \(ingredientsErr)")
+                            return
+                        }
+
+                        guard let ingredientsSnapshot = ingredientsSnapshot else {
+                            print("ingredients snapshot is nil")
+                            return
+                        }
+
+                        var newIngredientsAsItem = [IngredientsItem]() // Create a new array for the ingredients
+
+                        for ingredientDocument in ingredientsSnapshot.documents {
+                            let ingredientResult = Result {
+                                try ingredientDocument.data(as: IngredientsItem.self)
+                            }
+
+                            switch ingredientResult {
+                            case .success(let newIngredient):
+                                newIngredientsAsItem.append(newIngredient)
+                            case .failure(let err):
+                                print("IngredientResult fail: \(err)")
+                            }
+                        }
+
+                        newRecepie.ingredientsAsItem = newIngredientsAsItem // Update the recepie with the new ingredients
+                        self.allRecepies.append(newRecepie) // Append the recepie to the array
+
+                        dispatchGroup.leave() // Leave the dispatch group after fetching ingredients data
                     }
-                
-                    switch result {
-                    case .success(let newRecepie) :
-                        self.allRecepies.append(newRecepie)
-                    case .failure(let err) :
-                        Swift.print("\(err)")
-                    }
-                    
-                    }
-                
+
+                case .failure(let err):
+                    print("\(err)")
+                }
             }
-        print("function FetchData finished")
+
+            dispatchGroup.notify(queue: .main) {
+                print("Function FetchData finished")
+            }
         }
-    
+    }
+
     
     func listenToFirestore() {
         guard let currentUser = currentUser else {
@@ -176,11 +199,30 @@ class RecepiesList : ObservableObject {
         print("Function listenToFavoritesList finished")
     }
     
-
+    func checkIfItemIsAdded(searchWord : String) -> Bool {
+        for recipe in self.userItems {
+            if recipe.itemName == searchWord {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    
     }
 
-    
-   
+
+
+
+//
+//struct IngredientsItem : Identifiable, Codable, Hashable{
+//
+//    @DocumentID var id : String?
+//    var itemName : String
+//    var itemQuantity : Double?
+//    var itemMeasurement : String?
+//}
 
     
         

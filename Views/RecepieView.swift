@@ -1,5 +1,5 @@
 //
-//  RecepieView.swift
+//  RecipeView.swift
 //  FreshRecepies
 //
 //  Created by Alexander Carlsson on 2023-01-23.
@@ -16,68 +16,29 @@ extension String {
     }
 }
 
-struct RecepieView: View {
-    let db = Firestore.firestore()
+struct RecipeView: View {
     @ObservedObject var recepies : RecepiesList
-
-    @State var searchQuery = ""
-    @State var signedIn = false
-
-    let currentUser = Auth.auth().currentUser
-    
     
     var body: some View {
         NavigationView {
-            VStack {
-                List() {
-                    ForEach(recepies.allRecepies.filter {
-                        
-                        //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
-                        self.searchQuery.isEmpty ? true : $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
-                    }, id: \.self) {recepie in
-                        NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
-                        }
-                        .navigationTitle("Recept")
-                    }
-                }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                    .listStyle(.inset)
-                    .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
-            }
-                .onAppear{
-                    //init recept
-                    
-                    
-                    //                db.collection("recepies").document().setData( [
-                    //                    "name" : nyttRecept.name,
-                    //                    "portions" : nyttRecept.portions,
-                    //                    "ingredients" : nyttRecept.ingredients,
-                    //                    "allergenics" : nyttRecept.allergenics,
-                    //                    "instructions" : nyttRecept.instructions,
-                    //                    "cookingtimeMinutes" : nyttRecept.cookingtimeMinutes,
-                    //                    "isAdded" : nyttRecept.isAdded,
-                    //                    "imageUrl" : nyttRecept.imageUrl
-                    //
-                    //                ]
-                    //                )
-                       
+            VStack{
+                SearchFilterView(recepies : recepies)
             }
         }
 
     }
-    
-
 }
     
 
 
 struct RecepiesListView: View{
-    
-    
+
     @ObservedObject var recepies : RecepiesList
     @State var isRecepieAddedToDb = false
     @State var isRecepieFavouriteMarked = false
     @State var searchQuery = ""
+    @State var doesItemExist = false
+    
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
@@ -126,30 +87,25 @@ struct RecepiesListView: View{
                         HStack {
                             Spacer()
                             Button(action: {
+                                
                                 //Removes item from cart
                                 let searchString = recepie.id
                                 if let currentUser {
-                                    
-                                    var docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    
+                                    let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                     if recepies.addedRecepieID.contains(searchString!){
-                                        
-                                        //dessa rader måste vara problemet
-                                        //                                        for recepieIngredient in recepie.ingredients {
-                                        //                                            for addedIngredient in recepies.userItems{
-                                        //                                                 if recepieIngredient == addedIngredient.itemName{
-                                        //                                                     docRef.document(addedIngredient.id!).delete()
-                                        //                                                 }
-                                        //                                             }
-                                        //                                         }
-                                        
-                                        //Uppdaterad version av koden ovan, kör denna framöver och se om buggen har försvunnit
-                                        //Note: Samma fel.
-                                        
-                                        for recepieIngredient in recepie.ingredients {
-                                            if let index = recepies.userItems.firstIndex(where: { $0.itemName == recepieIngredient }) {
-                                                if index >= 0 && index < recepies.userItems.count {
-                                                    docRef.document(recepies.userItems[index].id!).delete()
+                                        for recipeItem in recepie.ingredientsAsItem! {
+                                            if let userIndex = recepies.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
+                                                if userIndex < recepies.userItems.count {
+                                                    let userItem = recepies.userItems[userIndex]
+                                                    if userItem.itemQuantity > recipeItem.itemQuantity! {
+                                                        let newValue = userItem.itemQuantity - recipeItem.itemQuantity!
+                                                        db.collection("users").document(currentUser.uid).collection("userItems").document(userItem.id!).updateData([
+                                                            "itemQuantity": newValue
+                                                        ])
+                                                        print("Det finns mer av \(recipeItem.itemName) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
+                                                    } else {
+                                                        docRef.document(userItem.id!).delete()
+                                                    }
                                                 } else {
                                                     print("Index out of range")
                                                 }
@@ -157,6 +113,7 @@ struct RecepiesListView: View{
                                                 print("Item not found")
                                             }
                                         }
+
                                         print("DeleteLoop FB ITEMS Complete")
                                         
                                         if recepie.id != nil {
@@ -170,20 +127,42 @@ struct RecepiesListView: View{
                                         
                                         
                                     }
-                                    
+                                    //Adds items to the cart
                                     else {
-                                        var docRef = db.collection("users").document(currentUser.uid)
+
+                                        let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
-                                        for recepieIngredient in recepie.ingredients {
-                                            let newItem = Item(itemName: recepieIngredient)
-                                            docRef.collection("userItems").document().setData([
-                                                
-                                                "itemName" : newItem.itemName,
-                                                "isBought" : newItem.isBought
-                                                
-                                            ])
+                                        for recepieItem in recepie.ingredientsAsItem! {
+                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recepieItem.itemName.lowercased())
+                                            if !doesItemExist {
+                                                let newItem = Item(itemName: recepieItem.itemName,
+                                                                   itemQuantity: recepieItem.itemQuantity!,
+                                                                   itemMeasurement: recepieItem.itemMeasurement!,
+                                                                   isBought: false)
+                                                docRef.collection("userItems").document().setData([
+                                                    
+                                                    "itemMeasurement" : newItem.itemMeasurement,
+                                                    "itemQuantity" : newItem.itemQuantity,
+                                                    "itemName" : newItem.itemName,
+                                                    "isBought" : newItem.isBought
+                                                    
+                                                ])
+                                            } else {
+                                                print("\(recepieItem.itemName) - Finns redan, adderar kvantiteten med \(String(describing: recepieItem.itemQuantity))")
+
+                                                    for recipe in recepies.userItems {
+                                                        if recipe.itemName.lowercased() == recepieItem.itemName.lowercased() {
+                                                            let newValue = recipe.itemQuantity + recepieItem.itemQuantity!
+                                                            db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
+                                                                "itemQuantity" : newValue
+                                                            ])
+                                                        }
+                                                    }
+                                                doesItemExist = false
+                                            }
                                         }
+                       
                                         
                                         isRecepieAddedToDb = true
                                         print("added items Complete")
@@ -212,6 +191,7 @@ struct RecepiesListView: View{
         
     }
     
+    
     func checkForRecepie() {
         isRecepieAddedToDb = recepies.addedRecepieID.contains(recepie.id!)
     }
@@ -230,8 +210,122 @@ struct RecepiesListView: View{
 }
 
 
+struct SearchFilterView : View {
+    @ObservedObject var recepies : RecepiesList
+    @State var filterListExcluded = [String]()
+    @State var filterQuery = ""
+    @State var searchQuery = ""
+    @State var isFilterViewCollapsed = true
+    
+    var db = Firestore.firestore()
+    
+    
+    var body : some View {
+        HStack {
+            Text(isFilterViewCollapsed ? "Klicka här för att filtrera din sökning" : "Klicka här för att gömma dina filter")
+                .onTapGesture {
+                    self.isFilterViewCollapsed.toggle()
+                }
+            Image(systemName: "magnifyingglass" )
+                .rotationEffect(.degrees(isFilterViewCollapsed ? 0 : 45))
+                .animation(isFilterViewCollapsed ? .easeInOut(duration: 0.1)  : .default)
+                .onTapGesture {
+                    self.isFilterViewCollapsed.toggle()
+                }
+            Spacer()
+        }.padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 0))
+        if !isFilterViewCollapsed {
+            VStack{
+                HStack{
+                    TextField("Skriv här för att lägga till ett nytt filter", text: $filterQuery)
+                        .padding(.leading,20)
+
+                    Spacer()
+                    Button(action: {
+                        if (filterQuery != "") {
+                            filterListExcluded.append(filterQuery.lowercased())
+                            filterQuery = ""
+                        }
+                    }){
+                        Image(systemName: "minus.circle")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.red)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 20))
+                    }
+                  
+             
+                    Spacer()
+                }
+                if (filterQuery != "" && filterListExcluded.isEmpty) {
+                    Text("Skriv in sökordet och klicka på knappen för att exkludera ingredienser eller hela maträtter från din sökning. Skriv exempelvis 'fisk' eller 'flygande jacob'")
+                        .foregroundColor(.gray)
+                }
+                List(){
+                    if !filterListExcluded.isEmpty {
+                        ForEach(filterListExcluded, id: \.self) {ingredient in
+                            HStack{
+                               
+                                Image(systemName: "hand.thumbsdown.fill")
+                                    .resizable()
+                                    .frame(width: 15, height: 15)
+                                    .foregroundColor(.red)
+                                Text(ingredient.prefix(1).capitalized + ingredient.dropFirst())
+                                Spacer()
+                                Button(action: {
+                                    filterListExcluded.removeAll(where: {$0 == ingredient})
+                                }){
+                                    Image(systemName: "minus.circle")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                    }
+                }.listStyle(.inset)
+                    .listRowBackground(Color.accentColor)
+                    Spacer()
+            }.padding(.leading, 20)
+        }
+        List() {
+            ForEach(recepies.allRecepies.filter {
+                //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
+                    self.searchQuery.isEmpty ? true :
+                        $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
+            }, id: \.self) {recepie in
+                    
+                    //Recepies that contains filtered out words is removed here
+                if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
+                    !filterListExcluded.contains(recepie.name.lowercased()))
+                {
+                    
+                    //Displays the recepies
+                        NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
+                            RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                        }
+                        .navigationTitle("Recept")
+                }
+            }
+        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+            .listStyle(.inset)
+            .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always) , prompt: "Sök på maträtter eller ingredienser")
+            
+            
+        
+        
+    }
+}
+
+
+
+
+
+
+
+
 //struct RecepieView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        RecepieView()
+//        RecipeView()
 //    }
 //}

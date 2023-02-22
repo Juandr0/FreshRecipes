@@ -15,16 +15,12 @@ struct FreshRecepiesApp: App {
     
     init() {
         FirebaseApp.configure()
-        Auth.auth().signInAnonymously { authResult, error in
-            
-        }
     }
     
     
     var body: some Scene {
         WindowGroup {
             StartPageView()
-//            RecepieView()
         }
     }
 }

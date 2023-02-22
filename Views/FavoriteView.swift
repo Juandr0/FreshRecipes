@@ -27,12 +27,15 @@ struct FavoriteView: View {
                     ForEach(recepies.allRecepies) {recepie in
                             let recepieID = recepie.id
                             if recepies.favoriteItems.contains(recepieID ?? "0"){
+                                
                                 NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
+                                    
                                     DisplayFavoritesList(recepies: recepies, db: db, recepie: recepie)
                                 }
                             }
                     }
                     .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
+                    
                 }
                 .listStyle(.plain)
             }
@@ -57,15 +60,30 @@ struct DisplayFavoritesList: View{
     var body : some View {
 
             Section {
-                VStack {
-                    HStack {
-                        Text(recepie.name)
-                        Spacer()
-                        Spacer()
-                        Image(systemName: "clock")
-                        Text("\(recepie.cookingtimeMinutes) min")
+                ZStack{
+
+                            
+                    VStack {
+                        
+                        HStack {
+                            Text(recepie.name)
+                            Spacer()
+                            Spacer()
+                            Image(systemName: "clock")
+                            Text("\(recepie.cookingtimeMinutes) min")
+                        }
+                        AsyncImage(url: URL(string: recepie.imageUrl)) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } placeholder: {
+                            Image(systemName: "takeoutbag.and.cup.and.straw")
+                        }
+                        .frame(width: .none, height: 75)
+                        .cornerRadius(5)
                     }
                 }
+          
             }
 
         }
