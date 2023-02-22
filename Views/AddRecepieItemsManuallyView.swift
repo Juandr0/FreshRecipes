@@ -104,7 +104,6 @@ struct UpdateAndAddItems : View {
                             .foregroundColor(.green)
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 30, trailing: 30))
                     }
-                    
                 }
             }
             

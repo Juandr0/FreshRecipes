@@ -29,9 +29,6 @@ struct LoadingScreen: View {
 
     let rotationTimer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     let textTimer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
-    let loginTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    let currentUser = Auth.auth().currentUser
     
 
 
@@ -66,36 +63,35 @@ struct LoadingScreen: View {
             }
             .onAppear {
                 loadingText = loadingTextList.randomElement()!
+                signInAnonymously()
                 listenForAuthChanges()
             }
             .onDisappear{
                 rotationTimer.upstream.connect().cancel()
                 textTimer.upstream.connect().cancel()
-                loginTimer.upstream.connect().cancel()
             }
-            .onReceive(loginTimer) { _ in
-                retryLogin()
-            }
+         
             
         }
       
     }
 
-
-    func retryLogin() {
-        if !isUserLoggedIn {
-            Auth.auth().signInAnonymously { authResult, error in
-
+    func signInAnonymously() {
+        Auth.auth().signInAnonymously { authResult, error in
+            if let error = error {
+                print("Error signing in: \(error).  retrying..")
+                signInAnonymously()
             }
         }
     }
+
     
     func listenForAuthChanges() {
         // Listen for authentication state changes
        Auth.auth().addStateDidChangeListener { (auth, user) in
             if let user = user {
                 // User is signed in
-                print("User is signed in with uid:", user.uid)
+                print("LoadingScreen: User is signed in with uid:", user.uid)
                 isUserLoggedIn = true
             } else {
                 // User is signed out
