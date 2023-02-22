@@ -31,8 +31,6 @@ struct LoadingScreen: View {
     let textTimer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
     
 
-    
-
 
     var body: some View {
         NavigationView{
@@ -65,8 +63,7 @@ struct LoadingScreen: View {
             }
             .onAppear {
                 loadingText = loadingTextList.randomElement()!
-                Auth.auth().signInAnonymously { authResult, error in
-                }
+                signInAnonymously()
                 listenForAuthChanges()
             }
             .onDisappear{
@@ -79,6 +76,14 @@ struct LoadingScreen: View {
       
     }
 
+    func signInAnonymously() {
+        Auth.auth().signInAnonymously { authResult, error in
+            if let error = error {
+                print("Error signing in: \(error).  retrying..")
+                signInAnonymously()
+            }
+        }
+    }
 
     
     func listenForAuthChanges() {
