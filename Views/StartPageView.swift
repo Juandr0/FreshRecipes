@@ -13,8 +13,7 @@ struct StartPageView: View {
 @State var isUserLoggedIn = false
     
     let db = Firestore.firestore()
-    let currentUser = Auth.auth().currentUser
-    
+
     
     var body: some View {
         if isUserLoggedIn  {
@@ -29,6 +28,7 @@ struct StartPageView: View {
 struct NavigationTabView : View {
     
 @StateObject var recepies = RecepiesList()
+    let currentUser = Auth.auth().currentUser
     
     var body : some View {
         TabView {
