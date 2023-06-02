@@ -10,22 +10,18 @@ import SwiftUI
 import Firebase
 import FirebaseAuth
 
-
 struct AddRecepieItemsManuallyView: View {
+    
     @ObservedObject var recepies : RecepiesList
     @State var userInput = ""
     @State var inputQuantity : Double = 1.0
     @State var measurement = "st"
     @State var doesItemExist = false
     
-
     var currentUser = Auth.auth().currentUser
- 
-
-    
-  
     
     var body : some View {
+        
         ZStack {
             VStack{
                 Spacer()
@@ -48,16 +44,15 @@ struct AddRecepieItemsManuallyView: View {
     }
 }
 
-
 struct UpdateAndAddItems : View {
-    @Environment(\.dismiss) var dismiss
     
+    @Environment(\.dismiss) var dismiss
     @ObservedObject var recepies : RecepiesList
     @Binding var userInput : String
     @Binding var inputQuantity : Double
     @Binding var measurement : String
     @Binding var doesItemExist : Bool
-
+    
     var db = Firestore.firestore()
     var currentUser = Auth.auth().currentUser
     
@@ -77,7 +72,7 @@ struct UpdateAndAddItems : View {
                             ])
                         } else {
                             print("Finns redan, adderar kvantiteten istället")
-
+                            
                             for recipe in recepies.userItems {
                                 if recipe.itemName.lowercased() == userInput.lowercased() {
                                     let newValue = inputQuantity + recipe.itemQuantity
@@ -93,7 +88,6 @@ struct UpdateAndAddItems : View {
                 }
                 userInput = ""
                 dismiss()
-                
             }){
                 HStack {
                     Spacer()
@@ -106,13 +100,9 @@ struct UpdateAndAddItems : View {
                     }
                 }
             }
-            
         }
-    }  
+    }
 }
-
-
-
 
 struct MeasurementPicker : View  {
     @Binding var userInput : String
@@ -135,7 +125,7 @@ struct MeasurementPicker : View  {
         "port",
         "kruka"
     ]
-
+    
     var body : some View {
         VStack{
             Picker("Mått (gäller bara ej tillagda föremål)", selection: $measurement)  {
@@ -157,9 +147,6 @@ struct MeasurementPicker : View  {
         }
     }
 }
-
-
-
 
 struct ItemQuantityPicker : View {
     @Binding var inputQuantity : Double
@@ -205,8 +192,8 @@ struct ItemQuantityPicker : View {
         9.5,
         9.75,
         10.0,
-      ]
-
+    ]
+    
     var body : some View {
         Picker("Antal", selection: $inputQuantity)  {
             ForEach(decimalList, id: \.self) { number in
@@ -216,8 +203,3 @@ struct ItemQuantityPicker : View {
         .pickerStyle(WheelPickerStyle())
     }
 }
-
-
-
-
-                   

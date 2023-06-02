@@ -11,16 +11,17 @@ import Firebase
 import FirebaseAuth
 
 struct RecepieInstructionView: View {
+    
     @ObservedObject var recepies : RecepiesList
-    let currentRecepie : Recepie
     @State var isCollapsed = true
     @State var isRecepieFavouriteMarked = false
-
+    
+    let currentRecepie : Recepie
     let db = Firestore.firestore()
     let currentUser = Auth.auth().currentUser
     
     var body : some View {
-     
+        
         VStack {
             HStack {
                 Text("\(currentRecepie.name)")
@@ -28,7 +29,6 @@ struct RecepieInstructionView: View {
                     .padding(.leading, 20)
                 Spacer()
             }
-                
             ZStack{
                 AsyncImage(url: URL(string: currentRecepie.imageUrl)) { image in
                     image
@@ -36,7 +36,6 @@ struct RecepieInstructionView: View {
                         .scaledToFill()
                 } placeholder: {
                     Image(systemName: "takeoutbag.and.cup.and.straw")
-               
                 }
                 .frame( height: 150)
                 .cornerRadius(5)
@@ -46,7 +45,6 @@ struct RecepieInstructionView: View {
                                  isRecepieFavouriteMarked : $isRecepieFavouriteMarked,
                                  currentRecepie: currentRecepie)
                 }
-               
             }
             VStack{
                 HStack {
@@ -70,7 +68,7 @@ struct RecepieInstructionView: View {
                     } .padding(.trailing, 20)
                 }
             }
-
+            
             if !isCollapsed {
                 ForEach (currentRecepie.allergenics, id: \.self) { text in
                     HStack{
@@ -81,15 +79,11 @@ struct RecepieInstructionView: View {
                 }
             }
         }
-            List (currentRecepie.instructions, id: \.self) {text in
-                Text(text)
-            }.listStyle(.plain)
+        List (currentRecepie.instructions, id: \.self) {text in
+            Text(text)
+        }.listStyle(.plain)
     }
-
-
-    
 }
-
 
 struct FavoriteMark : View {
     @ObservedObject var recepies : RecepiesList
@@ -99,36 +93,35 @@ struct FavoriteMark : View {
     let currentUser = Auth.auth().currentUser
     
     var body : some View {
-            HStack{
-                Spacer()
-                Button(action: {
+        HStack{
+            Spacer()
+            Button(action: {
+                
+                if let currentUser {
+                    isRecepieFavouriteMarked = !isRecepieFavouriteMarked
+                    let docRef = db.collection("users").document(currentUser.uid).collection("favorites").document(currentRecepie.id!)
                     
-                    if let currentUser {
-                        isRecepieFavouriteMarked = !isRecepieFavouriteMarked
-                        let docRef = db.collection("users").document(currentUser.uid).collection("favorites").document(currentRecepie.id!)
-
-                        if isRecepieFavouriteMarked {
-                            docRef.setData([:])
-                            isRecepieFavouriteMarked = true
-                        } else {
-                            docRef.delete()
-                            isRecepieFavouriteMarked = false
-                            recepies.favoriteItems.removeAll(where: {$0 == currentRecepie.id})
-                        }
+                    if isRecepieFavouriteMarked {
+                        docRef.setData([:])
+                        isRecepieFavouriteMarked = true
+                    } else {
+                        docRef.delete()
+                        isRecepieFavouriteMarked = false
+                        recepies.favoriteItems.removeAll(where: {$0 == currentRecepie.id})
                     }
-                }) {
-                    Image(systemName: isRecepieFavouriteMarked ? "heart.fill" : "heart")
-                        .resizable()
-                        .frame(width: 40, height: 40, alignment: .topTrailing)
-                        .foregroundColor(.red)
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 145, trailing: 0))
                 }
-                .contentShape(Rectangle())
-            }.onAppear{
-                checkForFavorite()
+            }) {
+                Image(systemName: isRecepieFavouriteMarked ? "heart.fill" : "heart")
+                    .resizable()
+                    .frame(width: 40, height: 40, alignment: .topTrailing)
+                    .foregroundColor(.red)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 145, trailing: 0))
             }
+            .contentShape(Rectangle())
+        }.onAppear{
+            checkForFavorite()
+        }
     }
-    
     
     func checkForFavorite() {
         if currentUser != nil {
@@ -138,5 +131,4 @@ struct FavoriteMark : View {
             }
         }
     }
-    
 }

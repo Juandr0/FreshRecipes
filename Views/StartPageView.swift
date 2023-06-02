@@ -10,10 +10,9 @@ import Firebase
 import FirebaseAuth
 
 struct StartPageView: View {
-@State var isUserLoggedIn = false
     
+    @State var isUserLoggedIn = false
     let db = Firestore.firestore()
-
     
     var body: some View {
         if isUserLoggedIn  {
@@ -27,7 +26,7 @@ struct StartPageView: View {
 
 struct NavigationTabView : View {
     
-@StateObject var recepies = RecepiesList()
+    @StateObject var recepies = RecepiesList()
     let currentUser = Auth.auth().currentUser
     
     var body : some View {
@@ -37,15 +36,11 @@ struct NavigationTabView : View {
                     Image(systemName: "fork.knife")
                     Text("Recept")
                 }
-              
-
             ShoppingListView(recepies : recepies)
                 .tabItem{
                     Image(systemName: "list.clipboard")
                     Text("Inköpslista")
                 }
-               
-            
             FavoriteView(recepies : recepies)
                 .tabItem{
                     Image(systemName: "heart")
