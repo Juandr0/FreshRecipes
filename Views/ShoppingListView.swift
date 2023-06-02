@@ -12,13 +12,14 @@ import FirebaseCore
 import FirebaseAuth
 
 struct ShoppingListView: View {
+    
     @ObservedObject var recepies : RecepiesList
-    //@State var showResetAlert = false
+    
     var currentUser = Auth.auth().currentUser
     var db = Firestore.firestore()
     
-    
     var body: some View {
+        
         NavigationView {
             ZStack{
                 VStack {
@@ -29,47 +30,37 @@ struct ShoppingListView: View {
                     }
                     ItemsList(recepies : recepies,
                               db : db)
-                    
-                    
-
-                    } //VStack end
+                }
                 VStack{
                     Spacer()
-                        HStack{
-                            Spacer()
-                            
-                            
-                            NavigationLink(destination: AddRecepieItemsManuallyView(recepies: recepies)) {
-                                Image(systemName: "plus.circle")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(.white)
-                                Text("Lägg till  ")
-                                    .foregroundColor(.white)
-                                }
-                                .buttonStyle(.bordered)
-                                .background(Color.gray)
-                                .cornerRadius(15)
-                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 25, trailing: 25))
-                                
-                 
+                    HStack{
+                        Spacer()
+                        NavigationLink(destination: AddRecepieItemsManuallyView(recepies: recepies)) {
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.white)
+                            Text("Lägg till  ")
+                                .foregroundColor(.white)
                         }
+                        .buttonStyle(.bordered)
+                        .background(Color.gray)
+                        .cornerRadius(15)
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 25, trailing: 25))
                     }
-                } //ZStack end
+                }
             }
         }
-    
-
     }
+}
 
-        
-    
 struct ItemsList : View {
+    
     @State var showResetAlert = false
     @ObservedObject var recepies : RecepiesList
+    
     var db : Firestore
     var currentUser = Auth.auth().currentUser
-
     
     var body : some View {
         List {
@@ -79,12 +70,10 @@ struct ItemsList : View {
                         Image(systemName: "square")
                             .backgroundStyle(.white)
                             .padding(.trailing, 20)
-                        
                         Button(action: ({
                             if let currentUser {
                                 let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                 
-                
                                 docRef.document(item.id!).updateData([
                                     "isBought" : !item.isBought
                                 ])
@@ -97,11 +86,7 @@ struct ItemsList : View {
                                 Spacer()
                                 Text(item.itemName)
                             }
-                          
-                                
                         }
-                       
-                        
                     }
                 }
             }
@@ -123,35 +108,31 @@ struct ItemsList : View {
                     }
                 }
             }
-
             ForEach(recepies.userItems){ item in
                 if item.isBought{
-                        HStack{
-                            Image(systemName: "checkmark.square")
-                                .padding(.trailing, 20)
-                            Button(action: ({
-                                if let currentUser {
-                                    let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    docRef.document(item.id!).updateData([
-                                        "isBought" : !item.isBought
-                                    ])
-                                }
-                            })){
-                                HStack{
-                                    //If double ends with a "0" - display it as an int
-                                    Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
-                                    Text(item.itemMeasurement)
-                                    Spacer()
-                                    Text(item.itemName)
-                                }
-                                .strikethrough()
-                                
+                    HStack{
+                        Image(systemName: "checkmark.square")
+                            .padding(.trailing, 20)
+                        Button(action: ({
+                            if let currentUser {
+                                let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
+                                docRef.document(item.id!).updateData([
+                                    "isBought" : !item.isBought
+                                ])
                             }
-                       
-                            Spacer()
-                                .backgroundStyle(.white)
-                            
+                        })){
+                            HStack{
+                                //If double ends with a "0" - display it as an int
+                                Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
+                                Text(item.itemMeasurement)
+                                Spacer()
+                                Text(item.itemName)
+                            }
+                            .strikethrough()
                         }
+                        Spacer()
+                            .backgroundStyle(.white)
+                    }
                 }
             }
             .onDelete { indexSet in
@@ -173,36 +154,29 @@ struct ItemsList : View {
                 }
             }
             .listRowBackground(Color(red: 0.3, green: 0.3, blue: 0.3))
-        }//List end
+        }
         .listStyle(.inset)
-            .navigationBarTitle("Inköpslista")
-            .padding(.top, 20)
-            .navigationBarTitleDisplayMode(.large)
-            
-            
-
-            .navigationBarItems(trailing: Button(action:{
-                self.showResetAlert = true
-            }){
-                Image(systemName: "trash.circle")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .foregroundColor(.red)
-                    
-            })
-            .alert(isPresented: $showResetAlert) {
-                Alert(title: Text("Varning"), message: Text("\nÄr du säker att du vill radera alla varor i varukorgen?"), primaryButton: .destructive(Text("Radera")) {
-                    deleteAllItems()
-                    recepies.userItems.removeAll()
-                }, secondaryButton: .cancel(Text("Avbryt")))
-              }
-
-        
-        
-        
+        .navigationBarTitle("Inköpslista")
+        .padding(.top, 20)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationBarItems(trailing: Button(action:{
+            self.showResetAlert = true
+        }){
+            Image(systemName: "trash.circle")
+                .resizable()
+                .frame(width: 30, height: 30)
+                .foregroundColor(.red)
+        })
+        .alert(isPresented: $showResetAlert) {
+            Alert(title: Text("Varning"), message: Text("\nÄr du säker att du vill radera alla varor i varukorgen?"), primaryButton: .destructive(Text("Radera")) {
+                deleteAllItems()
+                recepies.userItems.removeAll()
+            }, secondaryButton: .cancel(Text("Avbryt")))
+        }
     }
     
     func deleteAllItems(){
+        
         if let currentUser {
             for recepieID in recepies.addedRecepieID {
                 db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepieID).delete()
@@ -220,8 +194,6 @@ struct ItemsList : View {
                 }
             }
             print("DeleteLoop FB ITEMS Complete")
-          
         }
     }
-    
 }
