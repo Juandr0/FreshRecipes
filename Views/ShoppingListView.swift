@@ -178,7 +178,7 @@ struct ItemsList : View {
     func deleteAllItems(){
         
         if let currentUser {
-            for recipeID in recipes.addedRecepieID {
+            for recipeID in recipes.addedRecipeID {
                 db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recipeID).delete()
             }
             

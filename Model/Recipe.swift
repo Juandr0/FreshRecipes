@@ -30,7 +30,7 @@ struct Recipe: Codable, Identifiable, Equatable, Hashable {
     var name: String
     var portions: Int
     var ingredients: [String]
-    var ingredientsAsItem: [IngredientsItem]?
+    var ingredientsAsItem: [Item]?
     var allergenics: [String]
     var instructions: [String]
     var cookingtimeMinutes: Int

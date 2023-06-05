@@ -84,15 +84,15 @@ struct ListOfRecipesView: View{
                                     let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
                                     if recipes.addedRecipeID.contains(searchString!){
                                         for recipeItem in recipe.ingredientsAsItem! {
-                                            if let userIndex = recipes.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
+                                            if let userIndex = recipes.userItems.firstIndex(where: { $0.name == recipeItem.name }) {
                                                 if userIndex < recipes.userItems.count {
                                                     let userItem = recipes.userItems[userIndex]
-                                                    if userItem.itemQuantity > recipeItem.itemQuantity! {
-                                                        let newValue = userItem.itemQuantity - recipeItem.itemQuantity!
+                                                    if userItem.quantity > recipeItem.quantity {
+                                                        let newValue = userItem.quantity - recipeItem.quantity
                                                         db.collection("users").document(currentUser.uid).collection("userItems").document(userItem.id!).updateData([
                                                             "itemQuantity": newValue
                                                         ])
-                                                        print("Det finns mer av \(recipeItem.name) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
+                                                        print("Det finns mer av \(recipeItem.name) än receptet, kvantiteten med \(String(describing: recipeItem.quantity))")
                                                     } else {
                                                         docRef.document(userItem.id!).delete()
                                                     }
@@ -117,14 +117,14 @@ struct ListOfRecipesView: View{
                                     else {
                                         
                                         let docRef = db.collection("users").document(currentUser.uid)
-                                        docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
+                                        docRef.collection("addedRecepieID").document(recipe.id!).setData([:])
                                         
                                         for recipeItem in recipe.ingredientsAsItem! {
-                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recipeItem.name.lowercased())
+                                            itemExists = recipes.checkIfItemIsAdded(searchWord: recipeItem.name.lowercased())
                                             if !itemExists {
                                                 let newItem = Item(name: recipeItem.name,
-                                                                   quantity: recipeItem.quantity!,
-                                                                   measurement: recipeItem.measurement!,
+                                                                   quantity: recipeItem.quantity,
+                                                                   measurement: recipeItem.measurement,
                                                                    isBought: false)
                                                 docRef.collection("userItems").document().setData([
                                                     
@@ -138,7 +138,7 @@ struct ListOfRecipesView: View{
                                                 
                                                 for recipe in recipes.userItems {
                                                     if recipe.name.lowercased() == recipeItem.name.lowercased() {
-                                                        let newValue = recipe.quantity + recipeItem.quantity!
+                                                        let newValue = recipe.quantity + recipeItem.quantity
                                                         db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                                             "itemQuantity" : newValue
                                                         ])
@@ -275,7 +275,7 @@ struct SearchFilterView : View {
                 {
                     //Displays the recepies
                     NavigationLink(destination: RecipeInstructionView(recipes: recipes, currentRecipe: recipe)){
-                        RecipeListView(recipes: recipes, db: db, recipe: recipe)
+                        ListOfRecipesView(recipes: recipes, db: db, recipe: recipe)
                     }
                     .navigationTitle("Recept")
                 }

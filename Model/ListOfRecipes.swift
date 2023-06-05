@@ -100,11 +100,11 @@ class ListOfRecipes : ObservableObject {
                             return
                         }
                         
-                        var newIngredientsAsItem = [IngredientsItem]() // Create a new array for the ingredients
+                        var newIngredientsAsItem = [Item]() // Create a new array for the ingredients
                         
                         for ingredientDocument in ingredientsSnapshot.documents {
                             let ingredientResult = Result {
-                                try ingredientDocument.data(as: IngredientsItem.self)
+                                try ingredientDocument.data(as: Item.self)
                             }
                             
                             switch ingredientResult {
