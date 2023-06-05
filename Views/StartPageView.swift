@@ -26,22 +26,22 @@ struct StartPageView: View {
 
 struct NavigationTabView : View {
     
-    @StateObject var recepies = RecepiesList()
+    @StateObject var recipes = ListOfRecipes()
     let currentUser = Auth.auth().currentUser
     
     var body : some View {
         TabView {
-            RecipeView(recepies : recepies)
+            RecipeView(recipes : recipes)
                 .tabItem {
                     Image(systemName: "fork.knife")
                     Text("Recept")
                 }
-            ShoppingListView(recepies : recepies)
+            ShoppingListView(recipes : recipes)
                 .tabItem{
                     Image(systemName: "list.clipboard")
                     Text("Inköpslista")
                 }
-            FavoriteView(recepies : recepies)
+            FavoriteView(recipes : recipes)
                 .tabItem{
                     Image(systemName: "heart")
                     Text("Favoriter")

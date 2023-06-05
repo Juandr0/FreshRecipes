@@ -19,48 +19,47 @@ extension String {
 
 struct RecipeView: View {
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     
     var body: some View {
         NavigationView {
             VStack{
-                SearchFilterView(recepies : recepies)
+                SearchFilterView(recipes : recipes)
             }
         }
     }
 }
 
-struct RecepiesListView: View{
+struct ListOfRecipesView: View{
     
-    @ObservedObject var recepies : RecepiesList
-    @State var isRecepieAddedToDb = false
-    @State var isRecepieFavouriteMarked = false
+    @ObservedObject var recipes : ListOfRecipes
+    @State var recipeIsAddedToDb = false
+    @State var recipeIsFavouriteMarked = false
     @State var searchQuery = ""
-    @State var doesItemExist = false
+    @State var itemExists = false
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
-    let recepie : Recepie
+    let recipe : Recipe
     
     var body : some View {
         Section {
             VStack {
                 HStack {
-                    if isRecepieFavouriteMarked {
+                    if recipeIsFavouriteMarked {
                         Image(systemName: "heart.fill")
                             .resizable()
                             .foregroundColor(.red)
                             .frame(width: 15, height: 15)
                     }
-                    Text(recepie.name)
+                    Text(recipe.name)
                         .font(.title3)
-                    
                     Spacer()
                 }
                 HStack {
                     Button(action: {
                     }){
-                        AsyncImage(url: URL(string: recepie.imageUrl)) { image in
+                        AsyncImage(url: URL(string: recipe.imageUrl)) { image in
                             image
                                 .resizable()
                                 .scaledToFill()
@@ -74,26 +73,26 @@ struct RecepiesListView: View{
                         HStack {
                             Spacer()
                             Image(systemName: "clock")
-                            Text("\(recepie.cookingtimeMinutes) min")
+                            Text("\(recipe.cookingtimeMinutes) min")
                         }
                         HStack {
                             Spacer()
                             Button(action: {
                                 //Removes item from cart
-                                let searchString = recepie.id
+                                let searchString = recipe.id
                                 if let currentUser {
                                     let docRef = db.collection("users").document(currentUser.uid).collection("userItems")
-                                    if recepies.addedRecepieID.contains(searchString!){
-                                        for recipeItem in recepie.ingredientsAsItem! {
-                                            if let userIndex = recepies.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
-                                                if userIndex < recepies.userItems.count {
-                                                    let userItem = recepies.userItems[userIndex]
+                                    if recipes.addedRecipeID.contains(searchString!){
+                                        for recipeItem in recipe.ingredientsAsItem! {
+                                            if let userIndex = recipes.userItems.firstIndex(where: { $0.itemName == recipeItem.itemName }) {
+                                                if userIndex < recipes.userItems.count {
+                                                    let userItem = recipes.userItems[userIndex]
                                                     if userItem.itemQuantity > recipeItem.itemQuantity! {
                                                         let newValue = userItem.itemQuantity - recipeItem.itemQuantity!
                                                         db.collection("users").document(currentUser.uid).collection("userItems").document(userItem.id!).updateData([
                                                             "itemQuantity": newValue
                                                         ])
-                                                        print("Det finns mer av \(recipeItem.itemName) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
+                                                        print("Det finns mer av \(recipeItem.name) än receptet, kvantiteten med \(String(describing: recipeItem.itemQuantity))")
                                                     } else {
                                                         docRef.document(userItem.id!).delete()
                                                     }
@@ -106,12 +105,12 @@ struct RecepiesListView: View{
                                         }
                                         print("DeleteLoop FB ITEMS Complete")
                                         
-                                        if recepie.id != nil {
-                                            db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepie.id!).delete()
-                                            isRecepieAddedToDb = false
-                                            print("recepie ID removed from DB")
+                                        if recipe.id != nil {
+                                            db.collection("users").document(currentUser.uid).collection("addedRecipieID").document(recipe.id!).delete()
+                                            recipeIsAddedToDb = false
+                                            print("recipe ID removed from DB")
                                         } else {
-                                            print("Error: recepie.id is nil")
+                                            print("Error: recipe.id is nil")
                                         }
                                     }
                                     //Adds items to the cart
@@ -120,50 +119,50 @@ struct RecepiesListView: View{
                                         let docRef = db.collection("users").document(currentUser.uid)
                                         docRef.collection("addedRecepieID").document(recepie.id!).setData([:])
                                         
-                                        for recepieItem in recepie.ingredientsAsItem! {
-                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recepieItem.itemName.lowercased())
-                                            if !doesItemExist {
-                                                let newItem = Item(itemName: recepieItem.itemName,
-                                                                   itemQuantity: recepieItem.itemQuantity!,
-                                                                   itemMeasurement: recepieItem.itemMeasurement!,
+                                        for recipeItem in recipe.ingredientsAsItem! {
+                                            doesItemExist = recepies.checkIfItemIsAdded(searchWord: recipeItem.name.lowercased())
+                                            if !itemExists {
+                                                let newItem = Item(name: recipeItem.name,
+                                                                   quantity: recipeItem.quantity!,
+                                                                   measurement: recipeItem.measurement!,
                                                                    isBought: false)
                                                 docRef.collection("userItems").document().setData([
                                                     
-                                                    "itemMeasurement" : newItem.itemMeasurement,
-                                                    "itemQuantity" : newItem.itemQuantity,
-                                                    "itemName" : newItem.itemName,
+                                                    "itemMeasurement" : newItem.measurement,
+                                                    "itemQuantity" : newItem.quantity,
+                                                    "itemName" : newItem.name,
                                                     "isBought" : newItem.isBought
                                                 ])
                                             } else {
-                                                print("\(recepieItem.itemName) - Finns redan, adderar kvantiteten med \(String(describing: recepieItem.itemQuantity))")
+                                                print("\(recipeItem.name) - Finns redan, adderar kvantiteten med \(String(describing: recipeItem.quantity))")
                                                 
-                                                for recipe in recepies.userItems {
-                                                    if recipe.itemName.lowercased() == recepieItem.itemName.lowercased() {
-                                                        let newValue = recipe.itemQuantity + recepieItem.itemQuantity!
+                                                for recipe in recipes.userItems {
+                                                    if recipe.name.lowercased() == recipeItem.name.lowercased() {
+                                                        let newValue = recipe.quantity + recipeItem.quantity!
                                                         db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                                             "itemQuantity" : newValue
                                                         ])
                                                     }
                                                 }
-                                                doesItemExist = false
+                                                itemExists = false
                                             }
                                         }
-                                        isRecepieAddedToDb = true
+                                        recipeIsAddedToDb = true
                                         print("added items Complete")
                                     }
                                 }
                             }){
-                                Image(systemName: isRecepieAddedToDb ? "minus.circle" : "cart")
+                                Image(systemName: recipeIsAddedToDb ? "minus.circle" : "cart")
                             }
                             
                             .frame(width: 50, height: 35)
                             .buttonStyle(.bordered)
-                            .background(isRecepieAddedToDb ? Color.red : Color.green)
+                            .background(recipeIsAddedToDb ? Color.red : Color.green)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 2, trailing: 15))
                         }.onAppear{
-                            checkForRecepie()
+                            checkForRecipe()
                             checkForFavorite()
                         }
                     }
@@ -173,17 +172,17 @@ struct RecepiesListView: View{
         .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
     }
     
-    func checkForRecepie() {
-        isRecepieAddedToDb = recepies.addedRecepieID.contains(recepie.id!)
+    func checkForRecipe() {
+        recipeIsAddedToDb = recipes.addedRecipeID.contains(recipe.id!)
     }
     
     func checkForFavorite() {
         if currentUser != nil {
-            let recepieID = recepie.id
-            if recepies.favoriteItems.contains(recepieID ?? "0"){
-                isRecepieFavouriteMarked = true
+            let recipeID = recipe.id
+            if recipes.favoriteItems.contains(recipeID ?? "0"){
+                recipeIsFavouriteMarked = true
             } else {
-                isRecepieFavouriteMarked = false
+                recipeIsFavouriteMarked = false
             }
         }
     }
@@ -191,7 +190,7 @@ struct RecepiesListView: View{
 
 struct SearchFilterView : View {
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     @State var filterListExcluded = [String]()
     @State var filterQuery = ""
     @State var searchQuery = ""
@@ -264,19 +263,19 @@ struct SearchFilterView : View {
             }.padding(.leading, 20)
         }
         List() {
-            ForEach(recepies.allRecepies.filter {
+            ForEach(recipes.allRecipes.filter {
                 //Filters what's displayed by using the searchQuery. I.e: User types "kyckling" in the searchbar and since it gets a match in the ingredientslist of 'flygande jacob', it will display this dish
                 self.searchQuery.isEmpty ? true :
                 $0.name.localizedCaseInsensitiveContains(self.searchQuery) || $0.ingredients.description.localizedCaseInsensitiveContains(self.searchQuery) || $0.allergenics.description.localizedCaseInsensitiveContains(self.searchQuery)
-            }, id: \.self) {recepie in
+            }, id: \.self) {recipe in
                 
                 //Recepies that contains filtered out words is removed here
-                if (!recepie.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recepie.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
-                    !filterListExcluded.contains(recepie.name.lowercased()))
+                if (!recipe.allergenics.contains(where: { filterListExcluded.contains($0) }) && !recipe.ingredients.contains(where: { filterListExcluded.contains($0) }) &&
+                    !filterListExcluded.contains(recipe.name.lowercased()))
                 {
                     //Displays the recepies
-                    NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                        RecepiesListView(recepies: recepies, db: db, recepie: recepie)
+                    NavigationLink(destination: RecipeInstructionView(recipes: recipes, currentRecipe: recipe)){
+                        RecipeListView(recipes: recipes, db: db, recipe: recipe)
                     }
                     .navigationTitle("Recept")
                 }

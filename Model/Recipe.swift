@@ -9,8 +9,8 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Recepie: Codable, Identifiable, Equatable, Hashable {
-    static func == (lhs: Recepie, rhs: Recepie) -> Bool {
+struct Recipe: Codable, Identifiable, Equatable, Hashable {
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
         lhs.id == rhs.id && lhs.name == rhs.name && lhs.portions == rhs.portions && lhs.ingredients == rhs.ingredients && lhs.ingredientsAsItem == rhs.ingredientsAsItem && lhs.allergenics == rhs.allergenics && lhs.instructions == rhs.instructions && lhs.cookingtimeMinutes == rhs.cookingtimeMinutes && lhs.imageUrl == rhs.imageUrl
     }
     

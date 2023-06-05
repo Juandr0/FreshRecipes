@@ -12,7 +12,7 @@ import FirebaseAuth
 
 struct FavoriteView: View {
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     @State var searchQuery = ""
     @State var signedIn = false
     
@@ -23,13 +23,13 @@ struct FavoriteView: View {
         NavigationView {
             VStack {
                 List() {
-                    ForEach(recepies.allRecepies) {recepie in
+                    ForEach(recipes.allRecipes) {recipe in
                         
-                        let recepieID = recepie.id
+                        let recipeID = recipe.id
                         
-                        if recepies.favoriteItems.contains(recepieID ?? "0"){
-                            NavigationLink(destination: RecepieInstructionView(recepies: recepies, currentRecepie: recepie)){
-                                DisplayFavoritesList(recepies: recepies, db: db, recepie: recepie)
+                        if recipes.favoriteItems.contains(recipeID ?? "0"){
+                            NavigationLink(destination: RecipeInstructionView(recipes: recipes, currentRecipe: recipe)){
+                                DisplayFavoritesList(recipes: recipes, db: db, recipe: recipe)
                             }
                         }
                     }
@@ -44,12 +44,12 @@ struct FavoriteView: View {
 
 struct DisplayFavoritesList: View{
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     @State var isItemFavoriteMarked = false
     
     let currentUser = Auth.auth().currentUser
     let db : Firestore
-    let recepie : Recepie
+    let recipe : Recipe
     
     var body : some View {
         
@@ -57,13 +57,13 @@ struct DisplayFavoritesList: View{
             ZStack{
                 VStack {
                     HStack {
-                        Text(recepie.name)
+                        Text(recipe.name)
                         Spacer()
                         Spacer()
                         Image(systemName: "clock")
-                        Text("\(recepie.cookingtimeMinutes) min")
+                        Text("\(recipe.cookingtimeMinutes) min")
                     }
-                    AsyncImage(url: URL(string: recepie.imageUrl)) { image in
+                    AsyncImage(url: URL(string: recipe.imageUrl)) { image in
                         image
                             .resizable()
                             .scaledToFill()
@@ -78,6 +78,6 @@ struct DisplayFavoritesList: View{
     }
     
     func checkForFavorite() {
-        isItemFavoriteMarked = recepies.favoriteItems.contains(recepie.id!)
+        isItemFavoriteMarked = recipes.favoriteItems.contains(recipe.id!)
     }
 }

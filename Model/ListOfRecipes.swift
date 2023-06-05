@@ -12,10 +12,10 @@ import FirebaseCore
 import FirebaseFirestoreSwift
 import FirebaseAuth
 
-class RecepiesList : ObservableObject {
+class ListOfRecipes : ObservableObject {
     
-    @Published var allRecepies = [Recepie]()
-    @Published var addedRecepieID = [String]()
+    @Published var allRecipes = [Recipe]()
+    @Published var addedRecipeID = [String]()
     @Published var userItems = [Item]()
     @Published var boughtItems = [Item]()
     @Published var favoriteItems = [String]()
@@ -26,11 +26,11 @@ class RecepiesList : ObservableObject {
     init () {
         fetchData()
         listenToFirestore()
-        listenToUserRecepies()
+        listenToUserRecipes()
         listenToUserFavorites()
     }
     
-    func listenToUserRecepies()  {
+    func listenToUserRecipes()  {
         if let currentUser  {
             
             db.collection("users").document(currentUser.uid).collection("userItems").addSnapshotListener{snapshot, err in
@@ -61,7 +61,7 @@ class RecepiesList : ObservableObject {
                 }
             }
         }
-        print("function listenToUserRecepies finished")
+        print("function listenToUserRecipes finished")
     }
     
     func fetchData() {
@@ -80,12 +80,12 @@ class RecepiesList : ObservableObject {
             }
             
             for document in snapshot.documents {
-                let recepieResult = Result {
-                    try document.data(as: Recepie.self)
+                let recipeResult = Result {
+                    try document.data(as: Recipe.self)
                 }
                 
-                switch recepieResult {
-                case .success(var newRecepie):
+                switch recipeResult {
+                case .success(var newRecipe):
                     dispatchGroup.enter() // Enter the dispatch group before fetching ingredients data
                     
                     let ingredientsCollectionRef = document.reference.collection("ingredientsAsItem")
@@ -115,8 +115,8 @@ class RecepiesList : ObservableObject {
                             }
                         }
                         
-                        newRecepie.ingredientsAsItem = newIngredientsAsItem // Update the recepie with the new ingredients
-                        self.allRecepies.append(newRecepie) // Append the recepie to the array
+                        newRecipe.ingredientsAsItem = newIngredientsAsItem // Update the recepie with the new ingredients
+                        self.allRecipes.append(newRecipe) // Append the recepie to the array
                         
                         dispatchGroup.leave() // Leave the dispatch group after fetching ingredients data
                     }
@@ -149,13 +149,13 @@ class RecepiesList : ObservableObject {
                 return
             }
             
-            if !self.addedRecepieID.isEmpty {
-                self.addedRecepieID.removeAll()
+            if !self.addedRecipeID.isEmpty {
+                self.addedRecipeID.removeAll()
             }
             
             if !snapshot.isEmpty {
                 for document in snapshot.documents {
-                    self.addedRecepieID.append(document.documentID)
+                    self.addedRecipeID.append(document.documentID)
                 }
             }
         }
@@ -195,7 +195,7 @@ class RecepiesList : ObservableObject {
     
     func checkIfItemIsAdded(searchWord : String) -> Bool {
         for recipe in self.userItems {
-            if recipe.itemName == searchWord {
+            if recipe.name == searchWord {
                 return true
             }
         }

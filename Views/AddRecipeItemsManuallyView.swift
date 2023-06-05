@@ -10,13 +10,13 @@ import SwiftUI
 import Firebase
 import FirebaseAuth
 
-struct AddRecepieItemsManuallyView: View {
+struct AddRecipeItemsManuallyView: View {
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     @State var userInput = ""
     @State var inputQuantity : Double = 1.0
     @State var measurement = "st"
-    @State var doesItemExist = false
+    @State var itemExists = false
     
     var currentUser = Auth.auth().currentUser
     
@@ -31,15 +31,15 @@ struct AddRecepieItemsManuallyView: View {
                     ItemQuantityPicker(inputQuantity: $inputQuantity)
                     MeasurementPicker(userInput : $userInput,
                                       measurement : $measurement,
-                                      recepies : recepies )
+                                      recipes : recipes )
                 }
                 Spacer()
             }
-            UpdateAndAddItems(recepies : recepies,
+            UpdateAndAddItems(recipes : recipes,
                               userInput: $userInput,
                               inputQuantity: $inputQuantity,
                               measurement: $measurement,
-                              doesItemExist: $doesItemExist)
+                              itemExists: $itemExists)
         }
     }
 }
@@ -47,11 +47,11 @@ struct AddRecepieItemsManuallyView: View {
 struct UpdateAndAddItems : View {
     
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     @Binding var userInput : String
     @Binding var inputQuantity : Double
     @Binding var measurement : String
-    @Binding var doesItemExist : Bool
+    @Binding var itemExists : Bool
     
     var db = Firestore.firestore()
     var currentUser = Auth.auth().currentUser
@@ -62,8 +62,8 @@ struct UpdateAndAddItems : View {
             Button(action: {
                 if userInput != "" {
                     if let currentUser {
-                        doesItemExist = recepies.checkIfItemIsAdded(searchWord: userInput.lowercased())
-                        if !doesItemExist {
+                        itemExists = recipes.checkIfItemIsAdded(searchWord: userInput.lowercased())
+                        if !itemExists {
                             db.collection("users").document(currentUser.uid).collection("userItems").addDocument(data:  [
                                 "itemName" : userInput.lowercased(),
                                 "isBought" : false,
@@ -73,16 +73,16 @@ struct UpdateAndAddItems : View {
                         } else {
                             print("Finns redan, adderar kvantiteten istället")
                             
-                            for recipe in recepies.userItems {
-                                if recipe.itemName.lowercased() == userInput.lowercased() {
-                                    let newValue = inputQuantity + recipe.itemQuantity
+                            for recipe in recipes.userItems {
+                                if recipe.name.lowercased() == userInput.lowercased() {
+                                    let newValue = inputQuantity + recipe.quantity
                                     db.collection("users").document(currentUser.uid).collection("userItems").document(recipe.id!).updateData([
                                         
                                         "itemQuantity" : newValue
                                     ])
                                 }
                             }
-                            doesItemExist = false
+                            itemExists = false
                         }
                     }
                 }
@@ -107,7 +107,7 @@ struct UpdateAndAddItems : View {
 struct MeasurementPicker : View  {
     @Binding var userInput : String
     @Binding var measurement : String
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     
     let measurementUnitsList = [
         "st",
@@ -140,9 +140,9 @@ struct MeasurementPicker : View  {
     }
     
     func test() {
-        for item in recepies.userItems {
-            if item.itemName == userInput.lowercased() {
-                measurement = item.itemMeasurement
+        for item in recipes.userItems {
+            if item.name == userInput.lowercased() {
+                measurement = item.measurement
             }
         }
     }

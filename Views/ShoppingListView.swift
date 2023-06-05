@@ -13,7 +13,7 @@ import FirebaseAuth
 
 struct ShoppingListView: View {
     
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     
     var currentUser = Auth.auth().currentUser
     var db = Firestore.firestore()
@@ -23,19 +23,19 @@ struct ShoppingListView: View {
         NavigationView {
             ZStack{
                 VStack {
-                    if recepies.userItems.isEmpty {
+                    if recipes.userItems.isEmpty {
                         Text("Här var det tomt.. \nLägg till saker i listan så visas de här!")
                             .foregroundColor(.gray)
                             .padding(.top, 250)
                     }
-                    ItemsList(recepies : recepies,
+                    ItemsList(recipes : recipes,
                               db : db)
                 }
                 VStack{
                     Spacer()
                     HStack{
                         Spacer()
-                        NavigationLink(destination: AddRecepieItemsManuallyView(recepies: recepies)) {
+                        NavigationLink(destination: AddRecipeItemsManuallyView(recipes: recipes)) {
                             Image(systemName: "plus.circle")
                                 .resizable()
                                 .frame(width: 30, height: 30)
@@ -57,14 +57,14 @@ struct ShoppingListView: View {
 struct ItemsList : View {
     
     @State var showResetAlert = false
-    @ObservedObject var recepies : RecepiesList
+    @ObservedObject var recipes : ListOfRecipes
     
     var db : Firestore
     var currentUser = Auth.auth().currentUser
     
     var body : some View {
         List {
-            ForEach(recepies.userItems){item in
+            ForEach(recipes.userItems){item in
                 if !item.isBought{
                     HStack{
                         Image(systemName: "square")
@@ -81,10 +81,10 @@ struct ItemsList : View {
                         })){
                             HStack{
                                 //If double ends with a "0" - display it as an int
-                                Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
-                                Text(item.itemMeasurement)
+                                Text(item.quantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.quantity)) : String(item.quantity))
+                                Text(item.measurement)
                                 Spacer()
-                                Text(item.itemName)
+                                Text(item.name)
                             }
                         }
                     }
@@ -93,14 +93,14 @@ struct ItemsList : View {
             .onDelete { indexSet in
                 guard let user = Auth.auth().currentUser else { return }
                 for index in indexSet {
-                    let item = recepies.userItems[index]
+                    let item = recipes.userItems[index]
                     if let id = item.id {
                         db.collection("users").document(user.uid)
                             .collection("userItems").document(id).delete { error in
                                 if let error = error {
                                     print("Error deleting document: \(error)")
                                 } else {
-                                    if recepies.userItems.isEmpty{
+                                    if recipes.userItems.isEmpty{
                                         deleteAllItems()
                                     }
                                 }
@@ -108,7 +108,7 @@ struct ItemsList : View {
                     }
                 }
             }
-            ForEach(recepies.userItems){ item in
+            ForEach(recipes.userItems){ item in
                 if item.isBought{
                     HStack{
                         Image(systemName: "checkmark.square")
@@ -123,10 +123,10 @@ struct ItemsList : View {
                         })){
                             HStack{
                                 //If double ends with a "0" - display it as an int
-                                Text(item.itemQuantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.itemQuantity)) : String(item.itemQuantity))
-                                Text(item.itemMeasurement)
+                                Text(item.quantity.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(item.quantity)) : String(item.quantity))
+                                Text(item.measurement)
                                 Spacer()
-                                Text(item.itemName)
+                                Text(item.name)
                             }
                             .strikethrough()
                         }
@@ -138,14 +138,14 @@ struct ItemsList : View {
             .onDelete { indexSet in
                 guard let user = Auth.auth().currentUser else { return }
                 for index in indexSet {
-                    let item = recepies.userItems[index]
+                    let item = recipes.userItems[index]
                     if let id = item.id {
                         db.collection("users").document(user.uid)
                             .collection("userItems").document(id).delete { error in
                                 if let error = error {
                                     print("Error deleting document: \(error)")
                                 } else {
-                                    if recepies.userItems.isEmpty{
+                                    if recipes.userItems.isEmpty{
                                         deleteAllItems()
                                     }
                                 }
@@ -170,7 +170,7 @@ struct ItemsList : View {
         .alert(isPresented: $showResetAlert) {
             Alert(title: Text("Varning"), message: Text("\nÄr du säker att du vill radera alla varor i varukorgen?"), primaryButton: .destructive(Text("Radera")) {
                 deleteAllItems()
-                recepies.userItems.removeAll()
+                recipes.userItems.removeAll()
             }, secondaryButton: .cancel(Text("Avbryt")))
         }
     }
@@ -178,14 +178,14 @@ struct ItemsList : View {
     func deleteAllItems(){
         
         if let currentUser {
-            for recepieID in recepies.addedRecepieID {
-                db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recepieID).delete()
+            for recipeID in recipes.addedRecepieID {
+                db.collection("users").document(currentUser.uid).collection("addedRecepieID").document(recipeID).delete()
             }
             
-            for ingredientID in recepies.userItems {
-                if let index = recepies.userItems.firstIndex(where: { $0.id == ingredientID.id }) {
-                    if index >= 0 && index < recepies.userItems.count {
-                        db.collection("users").document(currentUser.uid).collection("userItems").document(recepies.userItems[index].id!).delete()
+            for ingredientID in recipes.userItems {
+                if let index = recipes.userItems.firstIndex(where: { $0.id == ingredientID.id }) {
+                    if index >= 0 && index < recipes.userItems.count {
+                        db.collection("users").document(currentUser.uid).collection("userItems").document(recipes.userItems[index].id!).delete()
                     } else {
                         print("Index out of range")
                     }
